@@ -30,16 +30,10 @@
                 </p>
             </div>
 
-            @if ($subsystem->code === 'naitnetwork')
-                @include('subsystem.workspaces.naitnetwork')
-            @elseif($subsystem->code === 'naittask')
-                @include('subsystem.workspaces.naittask')
-            @elseif($subsystem->code === 'naitknowledge')
-                @include('subsystem.workspaces.naitknowledge')
-            @elseif($subsystem->code === 'naitgpt')
-                @include('subsystem.workspaces.naitgpt')
+            @if (view()->exists('subsystem.workspaces.' . $subsystem->code))
+                @include('subsystem.workspaces.' . $subsystem->code, ['subsystem' => $subsystem])
             @else
-                @include('subsystem.workspaces.default')
+                @include('subsystem.workspaces.default', ['subsystem' => $subsystem])
             @endif
 
         </div>
