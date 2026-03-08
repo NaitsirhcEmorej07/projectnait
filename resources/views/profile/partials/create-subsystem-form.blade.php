@@ -15,59 +15,66 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('subsystem.store') }}" class="mt-6 space-y-6">
+    <form method="POST" action="{{ route('subsystem.store') }}" class="mt-6">
         @csrf
 
-        <div>
-            <x-input-label for="name" :value="__('Subsystem Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')"
-                required />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-        </div>
+        <div class="grid grid-cols-2 gap-4">
 
-        <div>
-            <x-input-label for="code" :value="__('Code')" />
+            <!-- Subsystem Name -->
+            <div>
+                <x-input-label for="name" :value="__('Subsystem Name')" />
+                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')"
+                    required />
+                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            </div>
 
-            <x-text-input id="code" name="code" type="text" class="mt-1 block w-full" :value="old('code')"
-                oninput="updateRoute(this)" required />
+            <!-- Code -->
+            <div>
+                <x-input-label for="code" :value="__('Code')" />
+                <x-text-input id="code" name="code" type="text" class="mt-1 block w-full" :value="old('code')"
+                    oninput="updateRoute(this)" required />
+                <x-input-error class="mt-2" :messages="$errors->get('code')" />
+            </div>
 
-            <x-input-error class="mt-2" :messages="$errors->get('code')" />
-        </div>
+            <!-- Description (FULL WIDTH) -->
+            <div class="col-span-2">
+                <x-input-label for="description" :value="__('Description')" />
+                <textarea id="description" name="description"
+                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    rows="3">{{ old('description') }}</textarea>
+                <x-input-error class="mt-2" :messages="$errors->get('description')" />
+            </div>
 
-        <div>
-            <x-input-label for="description" :value="__('Description')" />
-            <textarea id="description" name="description"
-                class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                rows="3">{{ old('description') }}</textarea>
-            <x-input-error class="mt-2" :messages="$errors->get('description')" />
-        </div>
+            <!-- Route -->
+            <div>
+                <x-input-label for="route" :value="__('Route Name')" />
+                <x-text-input id="route" name="route" type="text" class="mt-1 block w-full bg-gray-100"
+                    :value="old('route')" readonly />
+                <x-input-error class="mt-2" :messages="$errors->get('route')" />
+            </div>
 
-        <div>
-            <x-input-label for="route" :value="__('Route Name')" />
+            <!-- Icon -->
+            <div>
+                <x-input-label for="icon" :value="__('Icon (Optional)')" />
+                <x-text-input id="icon" name="icon" type="text" class="mt-1 block w-full" :value="old('icon')"
+                    placeholder="example: pi pi-th-large" />
+                <x-input-error class="mt-2" :messages="$errors->get('icon')" />
+            </div>
 
-            <x-text-input id="route" name="route" type="text" class="mt-1 block w-full bg-gray-100"
-                :value="old('route')" readonly />
+            <!-- Active -->
+            <div class="col-span-2 flex items-center">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="is_active" value="1"
+                        class="rounded border-gray-300 text-indigo-600 shadow-sm" checked>
+                    <span class="ml-2 text-sm text-gray-600">Active</span>
+                </label>
+            </div>
 
-            <x-input-error class="mt-2" :messages="$errors->get('route')" />
-        </div>
+            <!-- Submit -->
+            <div class="col-span-2">
+                <x-primary-button>Save Subsystem</x-primary-button>
+            </div>
 
-        <div>
-            <x-input-label for="icon" :value="__('Icon (Optional)')" />
-            <x-text-input id="icon" name="icon" type="text" class="mt-1 block w-full" :value="old('icon')"
-                placeholder="example: pi pi-th-large" />
-            <x-input-error class="mt-2" :messages="$errors->get('icon')" />
-        </div>
-
-        <div class="flex items-center gap-4">
-            <label class="inline-flex items-center">
-                <input type="checkbox" name="is_active" value="1"
-                    class="rounded border-gray-300 text-indigo-600 shadow-sm" checked>
-                <span class="ml-2 text-sm text-gray-600">Active</span>
-            </label>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>Save Subsystem</x-primary-button>
         </div>
     </form>
 

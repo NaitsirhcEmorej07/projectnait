@@ -6,23 +6,28 @@
     </x-slot>
 
     <div class="p-3">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
             <!-- Welcome Card -->
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <h1 class="text-2xl font-bold text-gray-900 mb-2">
-                    Welcome to NAIT Core
+            <div class="bg-white border border-gray-200 rounded-xl px-5 py-4">
+
+                <h1 class="text-lg font-semibold tracking-wide text-gray-900">
+                    NAIT CORE
                 </h1>
-                <p class="text-gray-600">
-                    This is your central dashboard for accessing all active NAIT subsystems.
+
+                <div class="mt-1 border-t border-gray-200"></div>
+
+                <p class="mt-2 text-sm text-gray-600">
+                    Network Assistance Intelligence Tool — central dashboard for accessing all active subsystems.
                 </p>
+
             </div>
 
             <!-- Dynamic Subsystem Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 @forelse($subsystems ?? [] as $subsystem)
                     <a href="{{ route('subsystem.landing', $subsystem->code) }}"
-                        class="block bg-white shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
+                        class="block bg-white shadow-sm rounded-xl p-6 hover:shadow-md transition">
 
                         <div class="flex items-center gap-3 mb-3">
 
@@ -43,10 +48,11 @@
                     </a>
 
                 @empty
-                    <div class="col-span-full bg-white shadow-sm sm:rounded-lg p-6 text-center text-gray-500">
+                    <div class="col-span-full bg-white shadow-sm rounded-xl p-6 text-center text-gray-500">
                         No active subsystems found.
                     </div>
                 @endforelse
             </div>
         </div>
+    </div>
 </x-app-layout>
