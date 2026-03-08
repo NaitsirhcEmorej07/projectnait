@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-8">
+    <div class="p-3">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- Welcome Card -->
@@ -14,48 +14,39 @@
                     Welcome to NAIT Core
                 </h1>
                 <p class="text-gray-600">
-                    Network Assistance Intelligence Tool is my personal modular life platform
-                    built to manage networks, tasks, knowledge, and AI-assisted thinking
-                    from one centralized dashboard.
+                    This is your central dashboard for accessing all active NAIT subsystems.
                 </p>
             </div>
 
-            <!-- Subsystem Cards -->
+            <!-- Dynamic Subsystem Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                @forelse($subsystems ?? [] as $subsystem)
+                    <a href="{{ route('subsystem.landing', $subsystem->code) }}"
+                        class="block bg-white shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
 
-                <a href="{{ route('naitnetwork.index') }}"
-                   class="block bg-white shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-semibold text-gray-900">NaitNetwork</h3>
-                    <p class="text-sm text-gray-600 mt-2">
-                        Manage people, relationships, and connections.
-                    </p>
-                </a>
+                        <div class="flex items-center gap-3 mb-3">
 
-                <a href="{{ route('naittask.index') }}"
-                   class="block bg-white shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-semibold text-gray-900">NaitTask</h3>
-                    <p class="text-sm text-gray-600 mt-2">
-                        Organize tasks, priorities, and execution.
-                    </p>
-                </a>
+                            @if ($subsystem->icon)
+                                <i class="{{ $subsystem->icon }} text-2xl text-indigo-600"></i>
+                            @endif
 
-                <a href="{{ route('naitknowledge.index') }}"
-                   class="block bg-white shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-semibold text-gray-900">NaitKnowledge</h3>
-                    <p class="text-sm text-gray-600 mt-2">
-                        Store notes, learnings, and references.
-                    </p>
-                </a>
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                {{ $subsystem->name }}
+                            </h3>
 
-                <a href="{{ route('naitgpt.index') }}"
-                   class="block bg-white shadow-sm sm:rounded-lg p-6 hover:shadow-md transition">
-                    <h3 class="text-lg font-semibold text-gray-900">NaitGPT</h3>
-                    <p class="text-sm text-gray-600 mt-2">
-                        Use AI for planning, thinking, and decision support.
-                    </p>
-                </a>
+                        </div>
 
+                        <p class="text-sm text-gray-600">
+                            {{ $subsystem->description }}
+                        </p>
+
+                    </a>
+
+                @empty
+                    <div class="col-span-full bg-white shadow-sm sm:rounded-lg p-6 text-center text-gray-500">
+                        No active subsystems found.
+                    </div>
+                @endforelse
             </div>
         </div>
-    </div>
 </x-app-layout>
