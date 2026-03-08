@@ -27,9 +27,9 @@
             <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 @forelse($subsystems ?? [] as $subsystem)
                     <a href="{{ route('subsystem.landing', $subsystem->code) }}"
-                        class="block bg-white shadow-sm rounded-xl p-6 hover:shadow-md transition">
+                        class="block bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition">
 
-                        <div class="flex items-center gap-3 mb-3">
+                        <div class="flex items-center gap-1 mb-3">
 
                             @if ($subsystem->icon)
                                 <i class="{{ $subsystem->icon }} text-2xl text-indigo-600"></i>
