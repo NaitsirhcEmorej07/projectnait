@@ -9,6 +9,7 @@ class Subsystem extends Model
     protected $table = 'subsystem_tbl';
 
     protected $fillable = [
+        'user_id',
         'name',
         'code',
         'description',

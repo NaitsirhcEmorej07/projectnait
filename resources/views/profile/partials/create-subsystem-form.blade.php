@@ -20,15 +20,17 @@
 
         <div>
             <x-input-label for="name" :value="__('Subsystem Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
-                :value="old('name')" required />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')"
+                required />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="code" :value="__('Code')" />
-            <x-text-input id="code" name="code" type="text" class="mt-1 block w-full"
-                :value="old('code')" required />
+
+            <x-text-input id="code" name="code" type="text" class="mt-1 block w-full" :value="old('code')"
+                oninput="updateRoute(this)" required />
+
             <x-input-error class="mt-2" :messages="$errors->get('code')" />
         </div>
 
@@ -42,21 +44,24 @@
 
         <div>
             <x-input-label for="route" :value="__('Route Name')" />
-            <x-text-input id="route" name="route" type="text" class="mt-1 block w-full"
-                :value="old('route')" placeholder="example: naittask.index" required />
+
+            <x-text-input id="route" name="route" type="text" class="mt-1 block w-full bg-gray-100"
+                :value="old('route')" readonly />
+
             <x-input-error class="mt-2" :messages="$errors->get('route')" />
         </div>
 
         <div>
             <x-input-label for="icon" :value="__('Icon (Optional)')" />
-            <x-text-input id="icon" name="icon" type="text" class="mt-1 block w-full"
-                :value="old('icon')" placeholder="example: pi pi-th-large" />
+            <x-text-input id="icon" name="icon" type="text" class="mt-1 block w-full" :value="old('icon')"
+                placeholder="example: pi pi-th-large" />
             <x-input-error class="mt-2" :messages="$errors->get('icon')" />
         </div>
 
         <div class="flex items-center gap-4">
             <label class="inline-flex items-center">
-                <input type="checkbox" name="is_active" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm" checked>
+                <input type="checkbox" name="is_active" value="1"
+                    class="rounded border-gray-300 text-indigo-600 shadow-sm" checked>
                 <span class="ml-2 text-sm text-gray-600">Active</span>
             </label>
         </div>
@@ -65,4 +70,19 @@
             <x-primary-button>Save Subsystem</x-primary-button>
         </div>
     </form>
+
+    <script>
+        function updateRoute(input) {
+
+            let code = input.value
+                .toLowerCase()
+                .replace(/\s/g, '');
+
+            input.value = code;
+
+            let routeField = document.getElementById('route');
+
+            routeField.value = code + '.index';
+        }
+    </script>
 </section>

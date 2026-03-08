@@ -13,7 +13,9 @@ class ProfileController extends Controller
 {
     public function edit(Request $request): View
     {
-        $subsystems = Subsystem::orderBy('id', 'asc')->get();
+        $subsystems = Subsystem::where('user_id', $request->user()->id)
+            ->orderBy('id', 'asc')
+            ->get();
 
         return view('profile.edit', [
             'user' => $request->user(),

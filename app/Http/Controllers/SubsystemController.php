@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Subsystem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class SubsystemController extends Controller
 {
@@ -18,10 +20,11 @@ class SubsystemController extends Controller
         ]);
 
         Subsystem::create([
+            'user_id' => Auth::id(),
             'name' => $validated['name'],
-            'code' => $validated['code'],
+            'code' => strtolower(str_replace(' ', '', $validated['code'])),
             'description' => $validated['description'] ?? null,
-            'route' => $validated['route'],
+            'route' => strtolower(str_replace(' ', '', $validated['code'])) . '.index',
             'icon' => $validated['icon'] ?? null,
             'is_active' => $request->has('is_active') ? 1 : 0,
         ]);
@@ -81,7 +84,8 @@ class SubsystemController extends Controller
 
     public function landing($code)
     {
-        $subsystem = \App\Models\Subsystem::where('code', $code)
+        $subsystem = Subsystem::where('user_id', Auth::id())
+            ->where('code', $code)
             ->where('is_active', 1)
             ->firstOrFail();
 
