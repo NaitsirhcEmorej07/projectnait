@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subsystem_tbl', function (Blueprint $table) {
-            $table->foreignId('user_id')->after('id')->constrained()->onDelete('cascade');
-        });
+        if (!Schema::hasColumn('subsystem_tbl', 'user_id')) {
+            Schema::table('subsystem_tbl', function (Blueprint $table) {
+                $table->unsignedBigInteger('user_id')->after('id');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subsystem_tbl', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('user_id');
-        });
+        if (Schema::hasColumn('subsystem_tbl', 'user_id')) {
+            Schema::table('subsystem_tbl', function (Blueprint $table) {
+                $table->dropColumn('user_id');
+            });
+        }
     }
 };
