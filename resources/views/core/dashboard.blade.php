@@ -27,7 +27,7 @@
             <div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 @forelse($subsystems ?? [] as $subsystem)
                     <a href="{{ route('subsystem.landing', $subsystem->code) }}"
-                        class="block bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition">
+                        class="block bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition h-full flex flex-col">
 
                         <div class="flex items-center gap-1 mb-3">
 
@@ -41,7 +41,7 @@
 
                         </div>
 
-                        <p class="text-sm text-gray-600">
+                        <p class="text-sm text-gray-600 line-clamp-5">
                             {{ $subsystem->description }}
                         </p>
 
