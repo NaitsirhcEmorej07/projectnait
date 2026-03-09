@@ -82,25 +82,31 @@
             </div>
 
             <!-- TABLE CARD -->
+            <!-- TABLE CARD -->
             <div class="bg-white shadow-sm rounded-2xl p-3 sm:p-6 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm text-left">
 
                         <thead>
                             <tr class="border-b border-gray-200 text-gray-700">
-                                <th class="px-2 sm:px-4 py-2 sm:py-3 font-semibold">#</th>
+
+                                <th class="px-2 sm:px-4 py-2 sm:py-3 font-semibold">
+                                    #
+                                </th>
 
                                 <th class="px-2 sm:px-4 py-2 sm:py-3 font-semibold">
                                     Role
                                 </th>
 
-                                <th class="hidden sm:table-cell px-4 py-3 font-semibold">
+                                <!-- Mobile Only -->
+                                <th class="sm:hidden px-2 py-2 font-semibold">
                                     Slug
                                 </th>
 
                                 <th class="px-2 sm:px-4 py-2 sm:py-3 font-semibold text-center">
                                     Actions
                                 </th>
+
                             </tr>
                         </thead>
 
@@ -115,14 +121,10 @@
 
                                     <td class="px-2 sm:px-4 py-2 sm:py-3 font-medium text-gray-900">
                                         {{ $role->name }}
-
-                                        <!-- Mobile slug -->
-                                        <div class="sm:hidden text-xs text-gray-500">
-                                            {{ $role->slug }}
-                                        </div>
                                     </td>
 
-                                    <td class="hidden sm:table-cell px-4 py-3 text-gray-600">
+                                    <!-- Mobile Slug Column -->
+                                    <td class="sm:hidden px-2 py-2 text-xs text-gray-500 font-mono">
                                         {{ $role->slug }}
                                     </td>
 
@@ -152,7 +154,9 @@
                                     </td>
 
                                 </tr>
+
                             @empty
+
                                 <tr>
                                     <td colspan="4" class="px-4 py-6 text-center text-gray-500 text-sm">
                                         No roles found.
