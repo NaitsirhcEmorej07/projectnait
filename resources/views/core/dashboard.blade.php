@@ -9,16 +9,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
             <!-- Welcome Card -->
+
             <div class="bg-white border border-gray-200 rounded-xl px-5 py-4">
 
-                <h1 class="text-lg font-semibold tracking-wide text-gray-900">
-                    NAIT CORE
+
+                <h1 class="text-lg font-semibold tracking-widest text-gray-900">
+                    Nait<span class="text-indigo-600 font-bold">Core</span>
                 </h1>
 
-                <div class="mt-1 border-t border-gray-200"></div>
-
-                <p class="mt-2 text-sm text-gray-600">
-                    Network Assistance Intelligence Tool — central dashboard for accessing all active subsystems.
+                <p class="text-xs text-gray-500">
+                    Central Operations & Resource Environment — Centralized dashboard accessing all active
+                    subsystems.
                 </p>
 
             </div>
