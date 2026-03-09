@@ -41,7 +41,7 @@
 
                         </div>
 
-                        <p class="text-sm text-gray-600 line-clamp-5">
+                        <p class="text-sm text-gray-600 line-clamp-3 leading-relaxed min-h-[4.5rem]">
                             {{ $subsystem->description }}
                         </p>
 
