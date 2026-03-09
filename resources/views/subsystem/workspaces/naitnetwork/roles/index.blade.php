@@ -98,8 +98,8 @@
                                     Role
                                 </th>
 
-                                <!-- Mobile Only -->
-                                <th class="sm:hidden px-2 py-2 font-semibold">
+                                <!-- Slug visible everywhere -->
+                                <th class="px-2 sm:px-4 py-2 sm:py-3 font-semibold">
                                     Slug
                                 </th>
 
@@ -123,8 +123,7 @@
                                         {{ $role->name }}
                                     </td>
 
-                                    <!-- Mobile Slug Column -->
-                                    <td class="sm:hidden px-2 py-2 text-xs text-gray-500 font-mono">
+                                    <td class="px-2 sm:px-4 py-2 sm:py-3 text-gray-600 font-mono text-xs">
                                         {{ $role->slug }}
                                     </td>
 
