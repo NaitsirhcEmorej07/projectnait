@@ -113,7 +113,7 @@
                             </p>
                         @endif
 
-                        <div class="flex flex-wrap justify-center gap-1 mt-2">
+                        <div class="flex justify-center gap-1 mt-2 whitespace-nowrap overflow-hidden">
                             @foreach ($person->roles->take(2) as $role)
                                 <span class="px-2 py-0.5 text-[10px] bg-indigo-100 text-indigo-700 rounded-full">
                                     {{ $role->name }}
