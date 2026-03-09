@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Core\DashboardController;
 use App\Http\Controllers\SubsystemController;
+use App\Http\Controllers\NaitNetwork\PersonController;
+use App\Http\Controllers\NaitNetwork\PublicProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,8 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/subsystem/{id}/toggle', [SubsystemController::class, 'toggle'])->name('subsystem.toggle');
     Route::delete('/subsystem/{id}', [SubsystemController::class, 'destroy'])->name('subsystem.destroy');
 
-    Route::get('/subsystem/{code}', [SubsystemController::class, 'landing'])
-        ->name('subsystem.landing');
+    Route::get('/subsystem/{code}', [SubsystemController::class, 'landing'])->name('subsystem.landing');
+
+    Route::get('/naitnetwork/people', [PersonController::class, 'index'])->name('naitnetwork.people.index');
 });
 
 
@@ -31,5 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+Route::get('/naitnetwork/p/{slug}/{token}', [PublicProfileController::class, 'show'])->name('naitnetwork.public.show');
+
 
 require __DIR__ . '/auth.php';

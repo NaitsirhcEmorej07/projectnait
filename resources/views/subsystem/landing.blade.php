@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
+    {{-- <x-slot name="header">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 @if ($subsystem->icon)
@@ -15,12 +15,12 @@
                 ← Back to Dashboard
             </a>
         </div>
-    </x-slot>
+    </x-slot> --}}
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-3">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 px-4">
 
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+            {{-- <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <h1 class="text-2xl font-bold text-gray-900 mb-2">
                     {{ $subsystem->name }} Subsystem
                 </h1>
@@ -28,10 +28,14 @@
                 <p class="text-gray-600">
                     {{ $subsystem->description }}
                 </p>
-            </div>
+            </div> --}}
 
-            @if (view()->exists('subsystem.workspaces.' . $subsystem->code))
-                @include('subsystem.workspaces.' . $subsystem->code, ['subsystem' => $subsystem])
+            @php
+                $workspaceView = 'subsystem.workspaces.' . $subsystem->code . '.' . $subsystem->code;
+            @endphp
+
+            @if (view()->exists($workspaceView))
+                @include($workspaceView, ['subsystem' => $subsystem])
             @else
                 @include('subsystem.workspaces.default', ['subsystem' => $subsystem])
             @endif

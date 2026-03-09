@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NaitNetworkRole;
+use App\Models\NaitNetworkPerson;
 use App\Models\Subsystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 
 class SubsystemController extends Controller
@@ -82,13 +85,50 @@ class SubsystemController extends Controller
         return redirect()->route('profile.edit')->with('success', 'Subsystem deleted successfully.');
     }
 
-    public function landing($code)
+    public function landing(Request $request, $code)
     {
         $subsystem = Subsystem::where('user_id', Auth::id())
             ->where('code', $code)
             ->where('is_active', 1)
             ->firstOrFail();
 
-        return view('subsystem.landing', compact('subsystem'));
+        $data = [
+            'subsystem' => $subsystem,
+            'roles' => [],
+            'people' => collect(),
+            'selectedRole' => null,
+        ];
+
+        $method = 'handle' . Str::studly($code);
+
+        if (method_exists($this, $method)) {
+            $data = array_merge($data, $this->$method($request, $subsystem));
+        }
+
+        return view('subsystem.landing', $data);
+    }
+
+
+    private function handleNaitnetwork(Request $request, $subsystem)
+    {
+        $roles = NaitNetworkRole::orderBy('name')->get();
+        $selectedRole = $request->get('role');
+
+        $query = NaitNetworkPerson::with('roles')
+            ->where('user_id', Auth::id());
+
+        if ($selectedRole) {
+            $query->whereHas('roles', function ($q) use ($selectedRole) {
+                $q->where('naitnetwork_roles_tbl.id', $selectedRole);
+            });
+        }
+
+        $people = $query->paginate(10);
+
+        return [
+            'roles' => $roles,
+            'people' => $people,
+            'selectedRole' => $selectedRole,
+        ];
     }
 }
