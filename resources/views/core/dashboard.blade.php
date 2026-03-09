@@ -10,7 +10,7 @@
 
             <!-- Welcome Card -->
 
-            <div class="bg-white border border-gray-200 rounded-xl px-5 py-4">
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
 
 
                 <h1 class="text-lg font-semibold tracking-widest text-gray-900">
