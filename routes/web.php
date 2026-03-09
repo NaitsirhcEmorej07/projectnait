@@ -6,6 +6,7 @@ use App\Http\Controllers\Core\DashboardController;
 use App\Http\Controllers\SubsystemController;
 use App\Http\Controllers\NaitNetwork\PersonController;
 use App\Http\Controllers\NaitNetwork\PublicProfileController;
+use App\Http\Controllers\NaitNetwork\RoleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +27,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/subsystem/{code}', [SubsystemController::class, 'landing'])->name('subsystem.landing');
 
     Route::get('/naitnetwork/people', [PersonController::class, 'index'])->name('naitnetwork.people.index');
+    Route::prefix('naitnetwork')->group(function () {
+        Route::get('/roles', [RoleController::class, 'index'])->name('naitnetwork.roles.index');
+        Route::post('/roles', [RoleController::class, 'store'])->name('naitnetwork.roles.store');
+        Route::put('/roles/{role}', [RoleController::class, 'update'])->name('naitnetwork.roles.update');
+        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('naitnetwork.roles.destroy');
+    });
 });
 
 
