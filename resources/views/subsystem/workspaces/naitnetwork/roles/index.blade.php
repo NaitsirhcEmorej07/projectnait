@@ -128,24 +128,23 @@
                                     </td>
 
                                     <td class="px-2 sm:px-4 py-2 sm:py-3">
-                                        <div class="flex items-center justify-center gap-1 sm:gap-2">
+                                        <div class="flex items-center justify-center gap-2">
 
                                             <!-- EDIT -->
                                             <button
                                                 @click='editRole = @json(['id' => $role->id, 'name' => $role->name, 'slug' => $role->slug]); openEditModal = true'
-                                                class="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition"
+                                                class="p-1 text-gray-500 hover:text-indigo-600 transition"
                                                 title="Edit">
 
-                                                <i class="pi pi-pencil text-xs sm:text-sm"></i>
+                                                <i class="pi pi-pencil text-sm"></i>
 
                                             </button>
 
                                             <!-- DELETE -->
                                             <button @click="deleteRoleId = {{ $role->id }}; openDeleteModal = true"
-                                                class="inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-                                                title="Delete">
+                                                class="p-1 text-gray-500 hover:text-red-600 transition" title="Delete">
 
-                                                <i class="pi pi-trash text-xs sm:text-sm"></i>
+                                                <i class="pi pi-trash text-sm"></i>
 
                                             </button>
 

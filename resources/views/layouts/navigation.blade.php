@@ -4,11 +4,19 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                        <span class="ml-2 text-lg font-bold text-gray-900 tracking-widest">
-                            PROJECT NAIT
-                        </span>
+
+                        <div class="flex flex-col leading-tight">
+                            <span class="text-lg font-bold text-gray-900 tracking-widest">
+                                PROJECT NAIT
+                            </span>
+
+                             <span class="text-xs text-gray-500 leading-none -mt-0.5">
+                                Network Assistance Intelligence Tool
+                            </span>
+                        </div>
                     </a>
                 </div>
 
