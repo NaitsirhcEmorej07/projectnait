@@ -155,8 +155,8 @@
 
                             <div class="h-12 w-12 rounded-full overflow-hidden mb-2">
                                 @if ($person->profile_picture)
-                                    <img src="{{ Storage::temporaryUrl($person->profile_picture, now()->addMinutes(10)) }}"
-                                        alt="{{ $person->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ Storage::url($person->profile_picture) }}" alt="{{ $person->name }}"
+                                        class="w-full h-full object-cover">
                                 @else
                                     <div
                                         class="w-full h-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">

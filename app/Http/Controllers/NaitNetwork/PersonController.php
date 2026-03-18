@@ -61,7 +61,7 @@ class PersonController extends Controller
             $profilePicturePath = null;
 
             if ($request->hasFile('profile_picture')) {
-                $profilePicturePath = $request->file('profile_picture')->store('naitnetwork/profile_pictures');
+                $profilePicturePath = $request->file('profile_picture')->storePublicly('naitnetwork/profile_pictures');
             }
 
             $person = NaitNetworkPerson::create([
@@ -138,7 +138,7 @@ class PersonController extends Controller
                     Storage::disk('public')->delete($profilePicturePath);
                 }
 
-                $profilePicturePath = $request->file('profile_picture')->store('naitnetwork/profile_pictures');
+                $profilePicturePath = $request->file('profile_picture')->storePublicly('naitnetwork/profile_pictures');
             }
 
             $person->update([
