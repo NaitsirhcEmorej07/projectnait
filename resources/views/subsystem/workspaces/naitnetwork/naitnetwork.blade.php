@@ -1,4 +1,7 @@
-<div x-data="{ open: false, openAddNetworkModal: false }">
+<div x-data="{
+    open: false,
+    openAddNetworkModal: {{ $errors->any() ? 'true' : 'false' }}
+}">
 
     <div class="space-y-4">
 
@@ -76,9 +79,18 @@
 
                         <div class="flex flex-col items-center text-center">
 
-                            <div
-                                class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold mb-2">
-                                {{ strtoupper(substr($person->name, 0, 1)) }}
+                            <div class="h-12 w-12 rounded-full overflow-hidden mb-2">
+
+                                @if ($person->profile_picture && Storage::disk('public')->exists($person->profile_picture))
+                                    <img src="{{ asset('storage/' . $person->profile_picture) }}"
+                                        alt="{{ $person->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <div
+                                        class="w-full h-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                                        {{ strtoupper(substr($person->name, 0, 1)) }}
+                                    </div>
+                                @endif
+
                             </div>
 
                             <h3 class="text-sm font-semibold text-gray-900">
@@ -130,16 +142,30 @@
             <div class="absolute inset-0" @click="openAddNetworkModal = false"></div>
 
             <!-- MODAL -->
-            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6" x-data="{ imagePreview: null }">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6"
+                x-data="{
+                    imagePreview: null,
+                    socials: {{ json_encode(old('socials', [])) }},
+                    socialOptions: window.socialOptions || []
+                }">
 
                 <!-- CLOSE BUTTON -->
-                <button @click="openAddNetworkModal = false"
+                <button type="button" @click="openAddNetworkModal = false"
                     class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                     <i class="pi pi-times text-lg"></i>
                 </button>
 
                 <!-- BODY -->
-                <form class="space-y-4">
+                <form action="{{ route('naitnetwork.people.store') }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-4">
+                    @csrf
+
+                    <!-- GLOBAL ERROR -->
+                    @if ($errors->any())
+                        <div class="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+                            Please check the form fields.
+                        </div>
+                    @endif
 
                     <!-- PROFILE IMAGE -->
                     <div class="flex justify-center mt-2">
@@ -162,65 +188,88 @@
                                 class="absolute bottom-0 right-0 bg-indigo-600 text-white rounded-full h-8 w-8 flex items-center justify-center cursor-pointer shadow">
                                 <i class="pi pi-camera text-xs"></i>
 
-                                <input type="file" accept="image/*" class="hidden"
+                                <input type="file" name="profile_picture" accept="image/*" class="hidden"
                                     @change="
-                                    const file = $event.target.files[0];
-                                    if (file) imagePreview = URL.createObjectURL(file);
-                                ">
+                                        const file = $event.target.files[0];
+                                        if (file) imagePreview = URL.createObjectURL(file);
+                                    ">
                             </label>
-
                         </div>
                     </div>
 
-                    <!-- ROLE SELECTION (MINIMAL) -->
+                    @error('profile_picture')
+                        <p class="text-xs text-red-500 text-center">{{ $message }}</p>
+                    @enderror
+
+                    <!-- ROLE SELECTION -->
                     <div>
                         <select id="add_network_roles" name="roles[]" multiple
                             class="w-full text-sm border-0 border-b border-gray-300 focus:ring-0 focus:border-indigo-500 px-0 py-2 bg-transparent">
-
                             @foreach ($roles ?? [] as $role)
-                                <option value="{{ $role->id }}">
+                                <option value="{{ $role->id }}"
+                                    {{ collect(old('roles', []))->contains($role->id) ? 'selected' : '' }}>
                                     {{ $role->name }}
                                 </option>
                             @endforeach
-
                         </select>
+                        @error('roles')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                        @error('roles.*')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- NAME -->
                     <div>
-                        <input type="text" name="name" placeholder="Name"
+                        <input type="text" name="name" placeholder="Name" value="{{ old('name') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @error('name')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- EMAIL -->
                     <div>
-                        <input type="email" name="email" placeholder="Email"
+                        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @error('email')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- PHONE -->
                     <div>
-                        <input type="text" name="phone" placeholder="Phone"
+                        <input type="text" name="phone" placeholder="Phone" value="{{ old('phone') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @error('phone')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- SUMMARY -->
                     <div>
-                        <input type="text" name="summary" placeholder="Summary"
+                        <input type="text" name="summary" placeholder="Summary" value="{{ old('summary') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @error('summary')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- NOTES + SOCIALS GROUP -->
-                    <div class="space-y-2">
+                    <div class="space-y-1">
 
                         <!-- NOTES -->
                         <div>
                             <textarea rows="3" name="notes" placeholder="Notes"
-                                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">{{ old('notes') }}</textarea>
+                            @error('notes')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <!-- SOCIALS -->
-                        <div x-data="{ socials: [], socialOptions: window.socialOptions || [] }" class="space-y-2">
+                        <div class="space-y-1">
 
                             <!-- ADD BUTTON -->
                             <button type="button"
@@ -263,11 +312,11 @@
                                             <template x-for="option in socialOptions" :key="option.id">
                                                 <button type="button"
                                                     @click="
-                                    social.social_select_id = option.id;
-                                    social.platform = option.code;
-                                    social.icon = option.icon;
-                                    social.open = false;
-                                "
+                                                        social.social_select_id = option.id;
+                                                        social.platform = option.code;
+                                                        social.icon = option.icon;
+                                                        social.open = false;
+                                                    "
                                                     class="text-gray-500 hover:text-indigo-600">
                                                     <i :class="option.icon"></i>
                                                 </button>
@@ -290,6 +339,19 @@
 
                                 </div>
                             </template>
+
+                            @error('socials')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                            @error('socials.*.social_select_id')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                            @error('socials.*.platform')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                            @error('socials.*.link')
+                                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
 
                         </div>
 
@@ -315,36 +377,41 @@
     </template>
 
     <script>
-        new TomSelect("#role", {
-            create: false,
-            sortField: {
-                field: "text",
-                direction: "asc"
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.querySelector('#role')) {
+                new TomSelect("#role", {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
             }
         });
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            new TomSelect('#add_network_roles', {
-                plugins: ['remove_button'],
-                create: false,
-                placeholder: 'Add roles...',
-                hideSelected: true,
-
-                render: {
-                    item: function(data, escape) {
-                        return `<div class="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 mr-1">
+            if (document.querySelector('#add_network_roles')) {
+                new TomSelect('#add_network_roles', {
+                    plugins: ['remove_button'],
+                    create: false,
+                    placeholder: 'Add roles...',
+                    hideSelected: true,
+                    render: {
+                        item: function(data, escape) {
+                            return `<div class="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 mr-1">
                                 ${escape(data.text)}
                             </div>`;
+                        }
                     }
-                }
-            });
+                });
+            }
         });
     </script>
 
     <script>
-        window.socialOptions = @json($socials);
+        window.socialOptions = @json($socials ?? []);
     </script>
 
 </div>

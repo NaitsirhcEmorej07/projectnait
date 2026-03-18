@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/subsystem/{code}', [SubsystemController::class, 'landing'])->name('subsystem.landing');
 
     Route::get('/naitnetwork/people', [PersonController::class, 'index'])->name('naitnetwork.people.index');
+    Route::post('/naitnetwork/people', [PersonController::class, 'store'])->name('naitnetwork.people.store');
     Route::prefix('naitnetwork')->group(function () {
         Route::get('/roles', [RoleController::class, 'index'])->name('naitnetwork.roles.index');
         Route::post('/roles', [RoleController::class, 'store'])->name('naitnetwork.roles.store');
