@@ -9,7 +9,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- ✅ FAVICON -->
-    <link rel="icon" href="{{ asset('favicon-new.ico') }}">
+    <link rel="icon" href="{{ asset('projectnait.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
