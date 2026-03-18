@@ -154,8 +154,8 @@
                         <div class="flex flex-col items-center text-center">
 
                             <div class="h-12 w-12 rounded-full overflow-hidden mb-2">
-                                @if ($person->profile_picture && \Illuminate\Support\Facades\Storage::disk('public')->exists($person->profile_picture))
-                                    <img src="{{ asset('storage/' . $person->profile_picture) }}"
+                                @if ($person->profile_picture)
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('s3')->url($person->profile_picture) }}"
                                         alt="{{ $person->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div
