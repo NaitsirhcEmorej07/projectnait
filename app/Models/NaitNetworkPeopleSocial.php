@@ -24,4 +24,9 @@ class NaitNetworkPeopleSocial extends Model
     {
         return $this->belongsTo(NaitNetworkPerson::class, 'person_id');
     }
+
+    public function socialSelect()
+    {
+        return $this->belongsTo(NaitNetworkSocialSelect::class, 'social_select_id');
+    }
 }

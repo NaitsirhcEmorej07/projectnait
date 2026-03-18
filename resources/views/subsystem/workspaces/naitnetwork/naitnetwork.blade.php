@@ -1,8 +1,22 @@
 <div x-data="{
     open: false,
-    openAddNetworkModal: {{ $errors->any() ? 'true' : 'false' }}
+    openAddNetworkModal: {{ $errors->any() ? 'true' : 'false' }},
+    openEditNetworkModal: false,
+    openDeleteModal: false,
+    deleteId: null,
+    socialOptions: window.socialOptions || [],
+    selectedPerson: {
+        id: '',
+        name: '',
+        email: '',
+        phone: '',
+        summary: '',
+        notes: '',
+        profile_picture: '',
+        roles: []
+    },
+    editSocials: []
 }">
-
     <div class="space-y-4">
 
         {{-- ROLE SEARCH --}}
@@ -73,15 +87,74 @@
         @if ($people->count() > 0)
 
             <div class="grid grid-cols-2 gap-3">
-
                 @foreach ($people as $person)
-                    <div class="bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition">
+                    @php
+                        $personData = [
+                            'id' => $person->id,
+                            'name' => $person->name,
+                            'email' => $person->email,
+                            'phone' => $person->phone,
+                            'summary' => $person->summary,
+                            'notes' => $person->notes,
+                            'profile_picture' => $person->profile_picture,
+                            'roles' => $person->roles->pluck('id')->values()->toArray(),
+                            'socials' => $person->socials
+                                ->map(function ($social) {
+                                    return [
+                                        'social_select_id' => $social->social_select_id,
+                                        'platform' => $social->platform,
+                                        'icon' => $social->socialSelect->icon ?? '',
+                                        'link' => $social->url,
+                                        'open' => false,
+                                    ];
+                                })
+                                ->values()
+                                ->toArray(),
+                        ];
+                    @endphp
+
+                    <div class="bg-white shadow-sm rounded-xl p-4 hover:shadow-md transition cursor-pointer"
+                        data-person='@json($personData)'
+                        @click="
+                                    const person = JSON.parse($el.dataset.person);
+
+                                    selectedPerson = {
+                                        id: person.id,
+                                        name: person.name ?? '',
+                                        email: person.email ?? '',
+                                        phone: person.phone ?? '',
+                                        summary: person.summary ?? '',
+                                        notes: person.notes ?? '',
+                                        profile_picture: person.profile_picture ?? '',
+                                        roles: person.roles ?? []
+                                    };
+
+                                    deleteId = person.id;
+
+                                    editSocials = (person.socials ?? []).map((social, i) => {
+                                        let matched = socialOptions.find(option =>
+                                            (option.code ?? '')
+.toLowerCase() === (social.platform ?? '').toLowerCase()
+                                        );
+
+                                        return {
+                                            ...social,
+                                            icon: social.icon || (matched ? matched.icon : ''),
+                                            _key: Date.now() + i + Math.random()
+                                        };
+                                    });
+
+                                    openEditNetworkModal = true;
+
+                                    setTimeout(() => {
+                                    window.initEditRoleSelect(selectedPerson.roles ?? []);
+                                }, 100);
+                                ">
 
                         <div class="flex flex-col items-center text-center">
 
                             <div class="h-12 w-12 rounded-full overflow-hidden mb-2">
-
-                                @if ($person->profile_picture && Storage::disk('public')->exists($person->profile_picture))
+                                @if ($person->profile_picture && \Illuminate\Support\Facades\Storage::disk('public')->exists($person->profile_picture))
                                     <img src="{{ asset('storage/' . $person->profile_picture) }}"
                                         alt="{{ $person->name }}" class="w-full h-full object-cover">
                                 @else
@@ -90,15 +163,20 @@
                                         {{ strtoupper(substr($person->name, 0, 1)) }}
                                     </div>
                                 @endif
-
                             </div>
 
-                            <h3 class="text-sm font-semibold text-gray-900">
-                                {{ $person->name }}
-                            </h3>
+                            <h4 class="text-sm font-semibold text-gray-900 truncate w-full text-center">
+                                {{ strtoupper($person->name) }}
+                            </h4>
+
+                            @if ($person->phone)
+                                <p class="text-[11px] text-gray-500 mt-1">
+                                    {{ $person->phone }}
+                                </p>
+                            @endif
 
                             @if ($person->summary)
-                                <p class="text-xs text-gray-600 mt-1 line-clamp-2">
+                                <p class="text-xs text-gray-600 mt-1 line-clamp-2 leading-tight min-h-[2rem]">
                                     {{ $person->summary }}
                                 </p>
                             @endif
@@ -112,7 +190,6 @@
                             </div>
 
                         </div>
-
                     </div>
                 @endforeach
 
@@ -138,10 +215,8 @@
         <div x-show="openAddNetworkModal" x-transition.opacity
             class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto" style="display: none;">
 
-            <!-- BACKDROP -->
             <div class="absolute inset-0" @click="openAddNetworkModal = false"></div>
 
-            <!-- MODAL -->
             <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6"
                 x-data="{
                     imagePreview: null,
@@ -149,41 +224,34 @@
                     socialOptions: window.socialOptions || []
                 }">
 
-                <!-- CLOSE BUTTON -->
                 <button type="button" @click="openAddNetworkModal = false"
                     class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                     <i class="pi pi-times text-lg"></i>
                 </button>
 
-                <!-- BODY -->
                 <form action="{{ route('naitnetwork.people.store') }}" method="POST" enctype="multipart/form-data"
                     class="space-y-4">
                     @csrf
 
-                    <!-- GLOBAL ERROR -->
                     @if ($errors->any())
                         <div class="rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-700">
                             Please check the form fields.
                         </div>
                     @endif
 
-                    <!-- PROFILE IMAGE -->
                     <div class="flex justify-center mt-2">
                         <div class="relative">
 
                             <div
                                 class="h-24 w-24 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
-                                <!-- DEFAULT -->
                                 <div x-show="!imagePreview"
                                     class="text-gray-400 text-2xl flex items-center justify-center w-full h-full">
                                     <i class="pi pi-user"></i>
                                 </div>
 
-                                <!-- PREVIEW -->
                                 <img x-show="imagePreview" :src="imagePreview" class="w-full h-full object-cover">
                             </div>
 
-                            <!-- CAMERA -->
                             <label
                                 class="absolute bottom-0 right-0 bg-indigo-600 text-white rounded-full h-8 w-8 flex items-center justify-center cursor-pointer shadow">
                                 <i class="pi pi-camera text-xs"></i>
@@ -201,7 +269,6 @@
                         <p class="text-xs text-red-500 text-center">{{ $message }}</p>
                     @enderror
 
-                    <!-- ROLE SELECTION -->
                     <div>
                         <select id="add_network_roles" name="roles[]" multiple
                             class="w-full text-sm border-0 border-b border-gray-300 focus:ring-0 focus:border-indigo-500 px-0 py-2 bg-transparent">
@@ -220,7 +287,6 @@
                         @enderror
                     </div>
 
-                    <!-- NAME -->
                     <div>
                         <input type="text" name="name" placeholder="Name" value="{{ old('name') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -229,7 +295,6 @@
                         @enderror
                     </div>
 
-                    <!-- EMAIL -->
                     <div>
                         <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -238,7 +303,6 @@
                         @enderror
                     </div>
 
-                    <!-- PHONE -->
                     <div>
                         <input type="text" name="phone" placeholder="Phone" value="{{ old('phone') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -247,7 +311,6 @@
                         @enderror
                     </div>
 
-                    <!-- SUMMARY -->
                     <div>
                         <input type="text" name="summary" placeholder="Summary" value="{{ old('summary') }}"
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -256,10 +319,8 @@
                         @enderror
                     </div>
 
-                    <!-- NOTES + SOCIALS GROUP -->
                     <div class="space-y-1">
 
-                        <!-- NOTES -->
                         <div>
                             <textarea rows="3" name="notes" placeholder="Notes"
                                 class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">{{ old('notes') }}</textarea>
@@ -268,24 +329,18 @@
                             @enderror
                         </div>
 
-                        <!-- SOCIALS -->
                         <div class="space-y-1">
 
-                            <!-- ADD BUTTON -->
                             <button type="button"
                                 @click="socials.push({ social_select_id: '', platform: '', icon: '', link: '', open: false })"
                                 class="text-xs text-indigo-600 hover:text-indigo-700">
                                 + Add social
                             </button>
 
-                            <!-- LIST -->
                             <template x-for="(social, index) in socials" :key="index">
                                 <div class="flex items-center gap-2 relative">
 
-                                    <!-- PLATFORM ICON PICKER -->
                                     <div class="relative">
-
-                                        <!-- BUTTON -->
                                         <button type="button" @click="social.open = !social.open"
                                             class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-indigo-600">
 
@@ -299,13 +354,11 @@
 
                                         </button>
 
-                                        <!-- HIDDEN INPUTS -->
                                         <input type="hidden" :name="`socials[${index}][social_select_id]`"
                                             :value="social.social_select_id">
                                         <input type="hidden" :name="`socials[${index}][platform]`"
                                             :value="social.platform">
 
-                                        <!-- DROPDOWN -->
                                         <div x-show="social.open" @click.outside="social.open = false" x-transition
                                             class="absolute z-50 mt-1 bg-white border rounded-xl shadow p-2 flex gap-2">
 
@@ -326,12 +379,10 @@
 
                                     </div>
 
-                                    <!-- LINK -->
                                     <input type="text" x-model="social.link" :name="`socials[${index}][link]`"
                                         placeholder="Link"
                                         class="flex-1 text-xs border-0 border-b border-gray-300 focus:ring-0 focus:border-indigo-500 bg-transparent px-0 py-1">
 
-                                    <!-- REMOVE -->
                                     <button type="button" @click="socials.splice(index, 1)"
                                         class="text-gray-400 hover:text-red-500 text-xs">
                                         ✕
@@ -357,7 +408,6 @@
 
                     </div>
 
-                    <!-- ACTIONS -->
                     <div class="flex justify-end gap-2 pt-2">
                         <button type="button" @click="openAddNetworkModal = false"
                             class="px-4 py-2 text-sm rounded-xl bg-gray-100 hover:bg-gray-200">
@@ -375,6 +425,192 @@
             </div>
         </div>
     </template>
+
+    {{-- EDIT NETWORK MODAL --}}
+    <template x-teleport="body">
+        <div x-show="openEditNetworkModal" x-transition.opacity
+            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto" style="display: none;">
+
+            <div class="absolute inset-0" @click="openEditNetworkModal = false"></div>
+
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6"
+                x-data="{ imagePreview: null }">
+
+                <button type="button" @click="openEditNetworkModal = false"
+                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+                    <i class="pi pi-times text-lg"></i>
+                </button>
+
+                <form :action="`/naitnetwork/people/${selectedPerson.id}`" method="POST"
+                    enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="flex justify-center mt-2">
+                        <div class="relative">
+
+                            <div
+                                class="h-24 w-24 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+
+                                <template x-if="imagePreview">
+                                    <img :src="imagePreview" class="w-full h-full object-cover">
+                                </template>
+
+                                <template x-if="!imagePreview && selectedPerson.profile_picture">
+                                    <img :src="`/storage/${selectedPerson.profile_picture}`"
+                                        class="w-full h-full object-cover">
+                                </template>
+
+                                <template x-if="!imagePreview && !selectedPerson.profile_picture">
+                                    <div class="text-gray-400 text-2xl flex items-center justify-center w-full h-full">
+                                        <i class="pi pi-user"></i>
+                                    </div>
+                                </template>
+
+                            </div>
+
+                            <label
+                                class="absolute bottom-0 right-0 bg-indigo-600 text-white rounded-full h-8 w-8 flex items-center justify-center cursor-pointer shadow">
+                                <i class="pi pi-camera text-xs"></i>
+
+                                <input type="file" name="profile_picture" accept="image/*" class="hidden"
+                                    @change="
+                                        const file = $event.target.files[0];
+                                        if (file) imagePreview = URL.createObjectURL(file);
+                                    ">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <select id="edit_network_roles" name="roles[]" multiple
+                            class="w-full text-sm border-0 border-b border-gray-300 focus:ring-0 focus:border-indigo-500 px-0 py-2 bg-transparent">
+                            @foreach ($roles ?? [] as $role)
+                                <option value="{{ $role->id }}">
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <input type="text" name="name" x-model="selectedPerson.name" placeholder="Name"
+                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    </div>
+
+                    <div>
+                        <input type="email" name="email" x-model="selectedPerson.email" placeholder="Email"
+                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    </div>
+
+                    <div>
+                        <input type="text" name="phone" x-model="selectedPerson.phone" placeholder="Phone"
+                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    </div>
+
+                    <div>
+                        <input type="text" name="summary" x-model="selectedPerson.summary" placeholder="Summary"
+                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    </div>
+
+                    <div>
+                        <textarea rows="3" name="notes" x-model="selectedPerson.notes" placeholder="Notes"
+                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                    </div>
+
+                    <div class="space-y-1">
+
+                        <button type="button"
+                            @click="editSocials.push({ social_select_id: '', platform: '', icon: '', link: '', open: false, _key: Date.now() + Math.random() })"
+                            class="text-xs text-indigo-600 hover:text-indigo-700">
+                            + Add social
+                        </button>
+
+                        <template x-if="editSocials.length === 0">
+                            <p class="text-xs text-gray-400">No social links yet.</p>
+                        </template>
+
+                        <template x-for="(social, index) in editSocials" :key="social._key">
+                            <div class="flex items-center gap-2 relative">
+
+                                <div class="relative">
+                                    <button type="button" @click="social.open = !social.open"
+                                        class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-indigo-600">
+
+                                        <template x-if="!social.icon">
+                                            <i class="pi pi-globe text-xs"></i>
+                                        </template>
+
+                                        <template x-if="social.icon">
+                                            <i :class="social.icon + ' text-xs'"></i>
+                                        </template>
+
+                                    </button>
+
+                                    <input type="hidden" :name="`socials[${index}][social_select_id]`"
+                                        :value="social.social_select_id">
+                                    <input type="hidden" :name="`socials[${index}][platform]`"
+                                        :value="social.platform">
+
+                                    <div x-show="social.open" @click.outside="social.open = false" x-transition
+                                        class="absolute z-50 mt-1 bg-white border rounded-xl shadow p-2 flex gap-2">
+
+                                        <template x-for="option in socialOptions" :key="option.id">
+                                            <button type="button"
+                                                @click="
+                                social.social_select_id = option.id;
+                                social.platform = option.code;
+                                social.icon = option.icon;
+                                social.open = false;
+                            "
+                                                class="text-gray-500 hover:text-indigo-600">
+                                                <i :class="option.icon"></i>
+                                            </button>
+                                        </template>
+
+                                    </div>
+                                </div>
+
+                                <input type="text" x-model="social.link" :name="`socials[${index}][link]`"
+                                    placeholder="Link"
+                                    class="flex-1 text-xs border-0 border-b border-gray-300 focus:ring-0 focus:border-indigo-500 bg-transparent px-0 py-1">
+
+                                <button type="button" @click="editSocials.splice(index, 1)"
+                                    class="text-gray-400 hover:text-red-500 text-xs">
+                                    ✕
+                                </button>
+
+                            </div>
+                        </template>
+
+                    </div>
+
+                    <div class="flex justify-center items-center gap-2 pt-4">
+
+                        <!-- Update -->
+                        <button type="submit"
+                            class="p-2 text-gray-700 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition">
+                            <i class="pi pi-check text-sm"></i>
+                        </button>
+
+                        <!-- Delete -->
+                        <button type="submit" form="delete-person-form"
+                            class="p-2 text-gray-700 hover:text-red-600 hover:bg-gray-100 rounded-lg transition">
+                            <i class="pi pi-trash text-sm"></i>
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </template>
+
+    <form id="delete-person-form" :action="`/naitnetwork/people/${deleteId}`" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -412,6 +648,34 @@
 
     <script>
         window.socialOptions = @json($socials ?? []);
+    </script>
+
+
+    <script>
+        window.initEditRoleSelect = function(selectedRoles = []) {
+            const el = document.querySelector('#edit_network_roles');
+            if (!el) return;
+
+            if (window.editTom) {
+                window.editTom.destroy();
+            }
+
+            window.editTom = new TomSelect(el, {
+                plugins: ['remove_button'],
+                create: false,
+                placeholder: 'Add roles...',
+                hideSelected: true,
+                render: {
+                    item: function(data, escape) {
+                        return `<div class="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 mr-1">
+                        ${escape(data.text)}
+                    </div>`;
+                    }
+                }
+            });
+
+            window.editTom.setValue(selectedRoles);
+        };
     </script>
 
 </div>
