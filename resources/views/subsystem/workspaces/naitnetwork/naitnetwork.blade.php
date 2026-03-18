@@ -155,7 +155,7 @@
 
                             <div class="h-12 w-12 rounded-full overflow-hidden mb-2">
                                 @if ($person->profile_picture)
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('s3')->url($person->profile_picture) }}"
+                                    <img src="{{ Storage::temporaryUrl($person->profile_picture, now()->addMinutes(10)) }}"
                                         alt="{{ $person->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div
