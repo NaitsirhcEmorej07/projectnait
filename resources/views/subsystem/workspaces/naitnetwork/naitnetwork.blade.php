@@ -124,13 +124,13 @@
     {{-- ADD NETWORK MODAL --}}
     <template x-teleport="body">
         <div x-show="openAddNetworkModal" x-transition.opacity
-            class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50" style="display: none;">
+            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto" style="display: none;">
 
             <!-- BACKDROP -->
             <div class="absolute inset-0" @click="openAddNetworkModal = false"></div>
 
             <!-- MODAL -->
-            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6" x-data="{ imagePreview: null }">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6" x-data="{ imagePreview: null }">
 
                 <!-- CLOSE BUTTON -->
                 <button @click="openAddNetworkModal = false"
@@ -210,10 +210,89 @@
                             class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                     </div>
 
-                    <!-- NOTES -->
-                    <div>
-                        <textarea rows="3" name="notes" placeholder="Notes"
-                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                    <!-- NOTES + SOCIALS GROUP -->
+                    <div class="space-y-2">
+
+                        <!-- NOTES -->
+                        <div>
+                            <textarea rows="3" name="notes" placeholder="Notes"
+                                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                        </div>
+
+                        <!-- SOCIALS -->
+                        <div x-data="{ socials: [], socialOptions: window.socialOptions || [] }" class="space-y-2">
+
+                            <!-- ADD BUTTON -->
+                            <button type="button"
+                                @click="socials.push({ social_select_id: '', platform: '', icon: '', link: '', open: false })"
+                                class="text-xs text-indigo-600 hover:text-indigo-700">
+                                + Add social
+                            </button>
+
+                            <!-- LIST -->
+                            <template x-for="(social, index) in socials" :key="index">
+                                <div class="flex items-center gap-2 relative">
+
+                                    <!-- PLATFORM ICON PICKER -->
+                                    <div class="relative">
+
+                                        <!-- BUTTON -->
+                                        <button type="button" @click="social.open = !social.open"
+                                            class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-indigo-600">
+
+                                            <template x-if="!social.icon">
+                                                <i class="pi pi-globe text-xs"></i>
+                                            </template>
+
+                                            <template x-if="social.icon">
+                                                <i :class="social.icon + ' text-xs'"></i>
+                                            </template>
+
+                                        </button>
+
+                                        <!-- HIDDEN INPUTS -->
+                                        <input type="hidden" :name="`socials[${index}][social_select_id]`"
+                                            :value="social.social_select_id">
+                                        <input type="hidden" :name="`socials[${index}][platform]`"
+                                            :value="social.platform">
+
+                                        <!-- DROPDOWN -->
+                                        <div x-show="social.open" @click.outside="social.open = false" x-transition
+                                            class="absolute z-50 mt-1 bg-white border rounded-xl shadow p-2 flex gap-2">
+
+                                            <template x-for="option in socialOptions" :key="option.id">
+                                                <button type="button"
+                                                    @click="
+                                    social.social_select_id = option.id;
+                                    social.platform = option.code;
+                                    social.icon = option.icon;
+                                    social.open = false;
+                                "
+                                                    class="text-gray-500 hover:text-indigo-600">
+                                                    <i :class="option.icon"></i>
+                                                </button>
+                                            </template>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- LINK -->
+                                    <input type="text" x-model="social.link" :name="`socials[${index}][link]`"
+                                        placeholder="Link"
+                                        class="flex-1 text-xs border-0 border-b border-gray-300 focus:ring-0 focus:border-indigo-500 bg-transparent px-0 py-1">
+
+                                    <!-- REMOVE -->
+                                    <button type="button" @click="socials.splice(index, 1)"
+                                        class="text-gray-400 hover:text-red-500 text-xs">
+                                        ✕
+                                    </button>
+
+                                </div>
+                            </template>
+
+                        </div>
+
                     </div>
 
                     <!-- ACTIONS -->
@@ -262,6 +341,10 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        window.socialOptions = @json($socials);
     </script>
 
 </div>

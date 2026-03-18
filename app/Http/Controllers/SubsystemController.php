@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\NaitNetworkRole;
 use App\Models\NaitNetworkPerson;
+use App\Models\NaitNetworkSocialSelect;
 use App\Models\Subsystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,10 +126,15 @@ class SubsystemController extends Controller
 
         $people = $query->paginate(10);
 
+        $socials = NaitNetworkSocialSelect::where('is_active', 1)
+            ->orderBy('name')
+            ->get();
+
         return [
             'roles' => $roles,
             'people' => $people,
             'selectedRole' => $selectedRole,
+            'socials' => $socials,
         ];
     }
 }
