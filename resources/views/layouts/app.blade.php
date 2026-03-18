@@ -22,6 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 </head>
 
+
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
         @include('layouts.navigation')
