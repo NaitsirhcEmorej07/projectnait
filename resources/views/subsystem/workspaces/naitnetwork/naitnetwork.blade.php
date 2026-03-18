@@ -170,7 +170,7 @@
                             </h4>
 
                             @if ($person->phone)
-                                <p class="text-[11px] text-gray-500 mt-1">
+                                <p class="text-[11px] text-gray-500 mt-0">
                                     {{ $person->phone }}
                                 </p>
                             @endif
@@ -456,9 +456,22 @@
                                     <img :src="imagePreview" class="w-full h-full object-cover">
                                 </template>
 
-                                <template x-if="!imagePreview && selectedPerson.profile_picture">
-                                    <img :src="`/storage/${selectedPerson.profile_picture}`"
-                                        class="w-full h-full object-cover">
+                                <template x-if="!imagePreview">
+                                    <div>
+                                        <template x-if="selectedPerson.profile_picture">
+                                            <img src="{{ Storage::url('') }}"
+                                                :src="'{{ Storage::url('') }}' + selectedPerson.profile_picture"
+                                                class="w-full h-full object-cover">
+                                        </template>
+
+                                        <template x-if="!selectedPerson.profile_picture">
+                                            <div
+                                                class="w-full h-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                                                <span
+                                                    x-text="selectedPerson.name ? selectedPerson.name.charAt(0).toUpperCase() : '?'"></span>
+                                            </div>
+                                        </template>
+                                    </div>
                                 </template>
 
                                 <template x-if="!imagePreview && !selectedPerson.profile_picture">
