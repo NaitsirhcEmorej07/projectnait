@@ -15,4 +15,6 @@ class NaitNetworkSocialSelect extends Model
         'is_active',
         'user_id',
     ];
+
+    
 }

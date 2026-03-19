@@ -9,9 +9,10 @@ class PublicProfileController extends Controller
 {
     public function show($slug, $token)
     {
-        $person = NaitNetworkPerson::with(['roles', 'socials' => function ($query) {
-                $query->where('is_public', true);
-            }])
+        $person = NaitNetworkPerson::with([
+                'roles',
+                'socials.socialSelect'
+            ])
             ->where('slug', $slug)
             ->where('public_token', $token)
             ->firstOrFail();
@@ -20,6 +21,6 @@ class PublicProfileController extends Controller
             abort(403, 'This profile is not available for public viewing.');
         }
 
-        return view('naitnetwork.public.show', compact('person'));
+        return view('subsystem.workspaces.naitnetwork.public_profile.index', compact('person'));
     }
 }

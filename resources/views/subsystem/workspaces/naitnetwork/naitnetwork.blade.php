@@ -92,6 +92,8 @@
                         $personData = [
                             'id' => $person->id,
                             'name' => $person->name,
+                            'slug' => $person->slug,
+                            'public_token' => $person->public_token,
                             'email' => $person->email,
                             'phone' => $person->phone,
                             'summary' => $person->summary,
@@ -610,6 +612,35 @@
                         <button type="submit" form="delete-person-form"
                             class="p-2 text-gray-700 hover:text-red-600 hover:bg-gray-100 rounded-lg transition">
                             <i class="pi pi-trash text-sm"></i>
+                        </button>
+
+                        <!-- Share -->
+                        <button type="button"
+                            @click="
+                                        fetch(`/naitnetwork/people/${selectedPerson.id}/share`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                selectedPerson.public_token = data.token;
+                                                navigator.clipboard.writeText(data.url);
+                                                alert('Public profile link copied!');
+                                            } else {
+                                                alert('Failed to generate public link.');
+                                            }
+                                        })
+                                        .catch(() => {
+                                            alert('Something went wrong while sharing.');
+                                        });
+                                    "
+                            class="p-2 text-gray-700 hover:text-emerald-600 hover:bg-gray-100 rounded-lg transition">
+                            <i class="pi pi-share-alt text-sm"></i>
                         </button>
 
                     </div>

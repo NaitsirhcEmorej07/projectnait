@@ -47,6 +47,6 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/naitnetwork/p/{slug}/{token}', [PublicProfileController::class, 'show'])->name('naitnetwork.public.show');
-
+Route::post('/naitnetwork/people/{person}/share', [PersonController::class, 'share'])->name('naitnetwork.people.share');
 
 require __DIR__ . '/auth.php';

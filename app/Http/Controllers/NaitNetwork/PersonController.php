@@ -69,6 +69,12 @@ class PersonController extends Controller
                 'profile_picture' => $profilePicturePath,
                 'name' => $validated['name'],
                 'slug' => Str::slug($validated['name']),
+                'is_public' => 0,
+                'public_token' => Str::random(40),
+
+                'show_email_publicly' => 1,
+                'show_phone_publicly' => 1,
+
                 'email' => $validated['email'] ?? null,
                 'phone' => $validated['phone'] ?? null,
                 'summary' => $validated['summary'] ?? null,
@@ -194,5 +200,29 @@ class PersonController extends Controller
         });
 
         return redirect()->back()->with('success', 'Network person deleted successfully.');
+    }
+
+    public function share(NaitNetworkPerson $person)
+    {
+        if ($person->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (empty($person->public_token)) {
+            $person->public_token = Str::random(40);
+        }
+
+        $person->is_public = 1;
+        $person->public_expires_at = null;
+        $person->save();
+
+        return response()->json([
+            'success' => true,
+            'url' => route('naitnetwork.public.show', [
+                'slug' => $person->slug,
+                'token' => $person->public_token,
+            ]),
+            'token' => $person->public_token,
+        ]);
     }
 }
