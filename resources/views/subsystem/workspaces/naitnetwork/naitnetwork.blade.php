@@ -630,13 +630,11 @@
                                             if (data.success) {
                                                 selectedPerson.public_token = data.token;
 
-                                                if (navigator.share) {
+                                               if (navigator.share) {
                                                     navigator.share({
-                                                        title: selectedPerson.name,
-                                                        text: `Check out ${selectedPerson.name}'s profile`,
                                                         url: data.url
                                                     });
-                                                } else {
+                                                }else {
                                                     navigator.clipboard.writeText(data.url);
                                                     alert('Link copied! (Sharing not supported)');
                                                 }
