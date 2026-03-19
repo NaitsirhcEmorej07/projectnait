@@ -42,7 +42,8 @@
 
                         </div>
 
-                        <p class="text-sm text-gray-600 line-clamp-3 leading-tight  min-h-[4.5rem]">
+                        <p class="text-xs text-gray-500 line-clamp-2 leading-tight ">
+                        {{-- <p class="text-xs text-gray-500 line-clamp-2 leading-tight  min-h-[4.5rem]"> --}}
                             {{ $subsystem->description }}
                         </p>
 
