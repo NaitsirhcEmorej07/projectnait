@@ -215,7 +215,7 @@
     {{-- ADD NETWORK MODAL --}}
     <template x-teleport="body">
         <div x-show="openAddNetworkModal" x-transition.opacity
-            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto" style="display: none;">
+            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto p-3" style="display: none;">
 
             <div class="absolute inset-0" @click="openAddNetworkModal = false"></div>
 
@@ -431,7 +431,7 @@
     {{-- EDIT NETWORK MODAL --}}
     <template x-teleport="body">
         <div x-show="openEditNetworkModal" x-transition.opacity
-            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto" style="display: none;">
+            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto p-3" style="display: none;">
 
             <div class="absolute inset-0" @click="openEditNetworkModal = false"></div>
 
@@ -629,8 +629,18 @@
                                         .then(data => {
                                             if (data.success) {
                                                 selectedPerson.public_token = data.token;
-                                                navigator.clipboard.writeText(data.url);
-                                                alert('Public profile link copied!');
+
+                                                if (navigator.share) {
+                                                    navigator.share({
+                                                        title: selectedPerson.name,
+                                                        text: `Check out ${selectedPerson.name}'s profile`,
+                                                        url: data.url
+                                                    });
+                                                } else {
+                                                    navigator.clipboard.writeText(data.url);
+                                                    alert('Link copied! (Sharing not supported)');
+                                                }
+
                                             } else {
                                                 alert('Failed to generate public link.');
                                             }

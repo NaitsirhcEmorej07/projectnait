@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $person->name }}</title>
+    <title>NaitShared:{{ $person->name }}</title>
 
     @vite(['resources/css/app.css'])
 
@@ -14,7 +14,7 @@
 
 <body class="bg-gray-50">
 
-    <div class="min-h-screen px-4 py-6 flex items-center justify-center">
+    <div class="min-h-screen px-6 py-6 flex items-center justify-center">
 
         <div class="w-full max-w-md">
 
@@ -33,21 +33,39 @@
                     </div>
                 </div>
 
+
                 {{-- NAME --}}
                 <div class="text-center mt-1">
-                    <h1 class="text-base font-semibold text-gray-900">
+                    <h1 class="text-base font-semibold text-gray-900 m-0">
                         {{ strtoupper($person->name ?? 'UNKNOWN') }}
                     </h1>
                 </div>
 
                 {{-- SUMMARY --}}
                 @if (!empty($person->summary))
-                    <div class="text-center mt-0">
-                        <p class="text-xs text-gray-500 leading-snug">
+                    <div class="text-center m-0">
+                        <p class="text-xs text-gray-500 leading-snug m-0">
                             {{ $person->summary }}
                         </p>
                     </div>
                 @endif
+
+                {{-- CONTACT --}}
+                {{-- <div class="text-center m-0">
+                    <p class="text-xs text-gray-500 leading-snug m-0">
+                        @if ($person->show_email_publicly && !empty($person->email))
+                            <span>{{ $person->email }}</span>
+                        @endif
+
+                        @if ($person->show_email_publicly && !empty($person->email) && $person->show_phone_publicly && !empty($person->phone))
+                            <span class="mx-1">|</span>
+                        @endif
+
+                        @if ($person->show_phone_publicly && !empty($person->phone))
+                            <span>{{ $person->phone }}</span>
+                        @endif
+                    </p>
+                </div> --}}
 
                 {{-- ROLES --}}
                 @if (!empty($person->roles) && $person->roles->count())
@@ -63,60 +81,37 @@
 
                 {{-- NOTES --}}
                 @if (!empty($person->notes))
-                    <div class="text-xs text-gray-600 leading-relaxed text-center whitespace-pre-line">
+                    <div class="text-xs text-gray-600 leading-relaxed text-center whitespace-pre-line ">
                         {{ $person->notes }}
                     </div>
                 @endif
 
-
-
-
-                {{-- CONTACT --}}
-                {{-- <div class="mt-4 text-center">
-
-                    @if ($person->show_email_publicly && !empty($person->email))
-                        <div class="flex items-center justify-center gap-2 text-xs text-gray-600">
-                            <i class="pi pi-envelope text-[10px] text-gray-400"></i>
-                            <span class="truncate">{{ $person->email }}</span>
-                        </div>
-                    @endif
-
-                    @if ($person->show_phone_publicly && !empty($person->phone))
-                        <div class="flex items-center justify-center gap-2 text-xs text-gray-600">
-                            <i class="pi pi-phone text-[10px] text-gray-400"></i>
-                            <span>{{ $person->phone }}</span>
-                        </div>
-                    @endif
-
-                </div> --}}
-                
                 {{-- SOCIAL --}}
-                @if (!empty($person->socials) && $person->socials->count())
-                    <div class="flex justify-center gap-2 mt-5 mb-1">
+                @if (($person->socials && $person->socials->count()) || ($person->show_email_publicly && !empty($person->email)))
+                    <div class="flex justify-center gap-2 mt-5 mb-0">
+
+                        {{-- SOCIALS --}}
                         @foreach ($person->socials as $social)
                             @php
                                 $platform = strtolower($social->platform ?? '');
-                                $iconClass = optional($social->socialSelect)->icon;
 
-                                if (!$iconClass) {
-                                    $iconMap = [
-                                        'facebook' => 'pi pi-facebook',
-                                        'fb' => 'pi pi-facebook',
-                                        'messenger' => 'pi pi-facebook',
-                                        'instagram' => 'pi pi-instagram',
-                                        'twitter' => 'pi pi-twitter',
-                                        'x' => 'pi pi-twitter',
-                                        'telegram' => 'pi pi-telegram',
-                                        'tiktok' => 'pi pi-tiktok',
-                                        'youtube' => 'pi pi-youtube',
-                                        'linkedin' => 'pi pi-linkedin',
-                                        'github' => 'pi pi-github',
-                                        'website' => 'pi pi-globe',
-                                        'web' => 'pi pi-globe',
-                                    ];
+                                $iconMap = [
+                                    'facebook' => 'pi pi-facebook',
+                                    'fb' => 'pi pi-facebook',
+                                    'messenger' => 'pi pi-facebook',
+                                    'instagram' => 'pi pi-instagram',
+                                    'twitter' => 'pi pi-twitter',
+                                    'x' => 'pi pi-twitter',
+                                    'telegram' => 'pi pi-telegram',
+                                    'tiktok' => 'pi pi-tiktok',
+                                    'youtube' => 'pi pi-youtube',
+                                    'linkedin' => 'pi pi-linkedin',
+                                    'github' => 'pi pi-github',
+                                    'website' => 'pi pi-globe',
+                                    'web' => 'pi pi-globe',
+                                ];
 
-                                    $iconClass = $iconMap[$platform] ?? 'pi pi-globe';
-                                }
+                                $iconClass = $iconMap[$platform] ?? 'pi pi-globe';
                             @endphp
 
                             <a href="{{ $social->url }}" target="_blank"
@@ -124,22 +119,45 @@
                                 <i class="{{ $iconClass }}"></i>
                             </a>
                         @endforeach
+
+                        {{-- EMAIL ICON --}}
+                        @if ($person->show_email_publicly && !empty($person->email))
+                            <a href="mailto:{{ $person->email }}"
+                                class="text-sm text-gray-500 hover:text-indigo-600 transition">
+                                <i class="pi pi-envelope"></i>
+                            </a>
+                        @endif
+
+                        {{-- PHONE (WHATSAPP) --}}
+                        @if (!empty($person->phone))
+                            @php
+                                $cleanPhone = preg_replace('/[^0-9]/', '', $person->phone);
+                                $message = urlencode('Hello, I see your profile in Project NAIT, I would like to connect with you :) ');
+                            @endphp
+
+                            <a href="https://wa.me/{{ $cleanPhone }}?text={{ $message }}" target="_blank"
+                                class="text-sm text-gray-500 hover:text-green-600 transition">
+                                <i class="pi pi-whatsapp"></i>
+                            </a>
+                        @endif
+
+
+
                     </div>
                 @endif
 
 
 
-                
+
 
 
 
             </div>
             <p class="mt-4 flex items-center justify-center gap-1 text-[10px] text-gray-400">
-                <span class="tracking-wide">POWERED BY PROJECT NAIT</span>
-                <span class="flex items-center gap-1 font-medium text-gray-500">
+                <span class="tracking-wide">POWERED BY: PROJECT NAIT</span>
+                {{-- <span class="flex items-center gap-1 font-medium text-gray-500">
                     <img src="{{ asset('projectnait.png') }}" alt="Project NAIT" class="h-3.5 w-3.5 object-contain">
-
-                </span>
+                </span> --}}
             </p>
 
         </div>
