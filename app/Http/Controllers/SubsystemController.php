@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\NaitNetworkRole;
 use App\Models\NaitNetworkPerson;
 use App\Models\NaitNetworkSocialSelect;
+
+use App\Models\NaitNote;
+
 use App\Models\Subsystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -135,6 +138,18 @@ class SubsystemController extends Controller
             'people' => $people,
             'selectedRole' => $selectedRole,
             'socials' => $socials,
+        ];
+    }
+
+
+    private function handleNaitnote(Request $request, $subsystem)
+    {
+        $notes = NaitNote::where('user_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+
+        return [
+            'notes' => $notes,
         ];
     }
 }

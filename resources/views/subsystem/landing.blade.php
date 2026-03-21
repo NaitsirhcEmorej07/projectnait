@@ -32,6 +32,7 @@
 
             @php
                 $workspaceView = 'subsystem.workspaces.' . $subsystem->code . '.' . $subsystem->code;
+                //  dd($subsystem->code, $workspaceView, view()->exists($workspaceView));
             @endphp
 
             @if (view()->exists($workspaceView))

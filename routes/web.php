@@ -7,6 +7,7 @@ use App\Http\Controllers\SubsystemController;
 use App\Http\Controllers\NaitNetwork\PersonController;
 use App\Http\Controllers\NaitNetwork\PublicProfileController;
 use App\Http\Controllers\NaitNetwork\RoleController;
+use App\Http\Controllers\NaitNotes\NoteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +37,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/roles/{role}', [RoleController::class, 'update'])->name('naitnetwork.roles.update');
         Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('naitnetwork.roles.destroy');
     });
+
+    Route::post('/naitnote/store', [NoteController::class, 'store'])->name('naitnote.store');
+    Route::put('/naitnote/{note}/update', [NoteController::class, 'update'])->name('naitnote.update');
+    Route::delete('/naitnote/{note}/delete', [NoteController::class, 'destroy'])->name('naitnote.destroy');
 });
 
 
