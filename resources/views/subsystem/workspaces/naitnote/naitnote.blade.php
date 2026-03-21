@@ -63,6 +63,14 @@
                 </div>
             @endif
 
+
+            {{-- Success Message --}}
+            @if (session('success'))
+                <div class="bg-green-100 text-green-700 px-4 py-3 rounded-xl">
+                    {{ session('success') }}
+                </div>
+            @endif
+
         </div>
 
     </div>
@@ -276,12 +284,6 @@
         </div>
     </template>
 
-    {{-- Success Message --}}
-    @if (session('success'))
-        <div class="bg-green-100 text-green-700 px-4 py-3 rounded-xl">
-            {{ session('success') }}
-        </div>
-    @endif
 
 
 </div>
