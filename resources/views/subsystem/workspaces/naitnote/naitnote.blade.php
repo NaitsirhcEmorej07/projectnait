@@ -10,12 +10,7 @@
 }">
     <div class="space-y-4">
 
-        {{-- Success Message --}}
-        @if (session('success'))
-            <div class="bg-green-100 text-green-700 px-4 py-3 rounded-xl">
-                {{ session('success') }}
-            </div>
-        @endif
+
 
         {{-- NOTES LIST --}}
         <div class="bg-white shadow-sm rounded-2xl p-5 sm:p-6">
@@ -280,5 +275,13 @@
             </div>
         </div>
     </template>
+
+    {{-- Success Message --}}
+    @if (session('success'))
+        <div class="bg-green-100 text-green-700 px-4 py-3 rounded-xl">
+            {{ session('success') }}
+        </div>
+    @endif
+
 
 </div>
