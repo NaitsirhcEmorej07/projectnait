@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('naitcalendar_events_tbl', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->date('event_date');
+            $table->time('event_time')->nullable();
+            $table->string('type')->nullable();
+            $table->string('status')->nullable();
+            $table->timestamps();
+
+            $table->index('user_id');
+            $table->index('event_date');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('naitcalendar_events_tbl');
+    }
+};

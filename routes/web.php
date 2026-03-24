@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Core\DashboardController;
+use App\Http\Controllers\NaitCalendar\NaitCalendarController;
 use App\Http\Controllers\SubsystemController;
 use App\Http\Controllers\NaitNetwork\PersonController;
 use App\Http\Controllers\NaitNetwork\PublicProfileController;
@@ -41,6 +42,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/naitnote/store', [NoteController::class, 'store'])->name('naitnote.store');
     Route::put('/naitnote/{note}/update', [NoteController::class, 'update'])->name('naitnote.update');
     Route::delete('/naitnote/{note}/delete', [NoteController::class, 'destroy'])->name('naitnote.destroy');
+
+
+    Route::middleware(['auth'])->prefix('naitcalendar')->name('naitcalendar.')->group(function () {
+        Route::post('/store', [NaitCalendarController::class, 'store'])->name('store');
+        Route::put('/{id}/update', [NaitCalendarController::class, 'update'])->name('update');
+        Route::delete('/{id}/delete', [NaitCalendarController::class, 'destroy'])->name('destroy');
+    });
 });
 
 

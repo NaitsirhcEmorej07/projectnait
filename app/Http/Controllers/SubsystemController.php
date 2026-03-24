@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NaitNetworkRole;
 use App\Models\NaitNetworkPerson;
 use App\Models\NaitNetworkSocialSelect;
+use App\Models\NaitCalendarEvent;
 
 use App\Models\NaitNote;
 
@@ -12,6 +13,7 @@ use App\Models\Subsystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 
 class SubsystemController extends Controller
@@ -150,6 +152,39 @@ class SubsystemController extends Controller
 
         return [
             'notes' => $notes,
+        ];
+    }
+
+    private function handleNaitcalendar(Request $request, $subsystem)
+    {
+        $month = (int) $request->get('month', now()->month);
+        $year = (int) $request->get('year', now()->year);
+
+        $currentDate = Carbon::createFromDate($year, $month, 1);
+
+        $startOfMonth = $currentDate->copy()->startOfMonth();
+        $endOfMonth = $currentDate->copy()->endOfMonth();
+
+        $startDayOfWeek = $startOfMonth->dayOfWeek; // 0 = Sunday
+        $daysInMonth = $endOfMonth->day;
+
+        $events = NaitCalendarEvent::where('user_id', Auth::id())
+            ->whereBetween('event_date', [
+                $startOfMonth->toDateString(),
+                $endOfMonth->toDateString()
+            ])
+            ->orderBy('event_date')
+            ->orderBy('event_time')
+            ->get()
+            ->groupBy('event_date');
+
+        return [
+            'currentDate' => $currentDate,
+            'month' => $month,
+            'year' => $year,
+            'startDayOfWeek' => $startDayOfWeek,
+            'daysInMonth' => $daysInMonth,
+            'events' => $events,
         ];
     }
 }
