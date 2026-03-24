@@ -56,7 +56,7 @@ class NaitcoreSubsystemSeeder extends Seeder
                     'updated_at' => now(),
                 ],
             ],
-            ['user_id', 'code'],
+            ['code'],
             ['name', 'route', 'icon', 'description', 'is_active', 'updated_at']
         );
     }
