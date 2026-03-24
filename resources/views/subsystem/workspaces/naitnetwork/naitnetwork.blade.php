@@ -183,12 +183,18 @@
                                 </p>
                             @endif
 
-                            <div class="flex justify-center gap-1 mt-2 whitespace-nowrap overflow-hidden">
-                                @foreach ($person->roles->take(2) as $role)
+                            <div class="flex justify-center gap-1 mt-2 whitespace-nowrap">
+                                @foreach ($person->roles->take(1) as $role)
                                     <span class="px-2 py-0.5 text-[10px] bg-indigo-100 text-indigo-700 rounded-full">
                                         {{ $role->name }}
                                     </span>
                                 @endforeach
+
+                                @if ($person->roles->count() > 1)
+                                    <span class="px-2 py-0.5 text-[10px] bg-gray-200 text-gray-600 rounded-full">
+                                        +{{ $person->roles->count() - 1 }}
+                                    </span>
+                                @endif
                             </div>
 
                         </div>
@@ -610,6 +616,7 @@
 
                         <!-- Delete -->
                         <button type="submit" form="delete-person-form"
+                            onclick="return confirm('Are you sure you want to delete this?')"
                             class="p-2 text-gray-700 hover:text-red-600 hover:bg-gray-100 rounded-lg transition">
                             <i class="pi pi-trash text-sm"></i>
                         </button>
