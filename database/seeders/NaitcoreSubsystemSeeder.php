@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,17 +9,10 @@ class NaitcoreSubsystemSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::first();
-
-        if (! $user) {
-            $this->command->warn('No user found. Please create a user first.');
-            return;
-        }
-
         DB::table('subsystem_tbl')->upsert(
             [
                 [
-                    'user_id' => $user->id,
+                    'user_id' => 1,
                     'name' => 'NaitNetwork',
                     'code' => 'naitnetwork',
                     'route' => 'naitnetwork.index',
@@ -31,7 +23,7 @@ class NaitcoreSubsystemSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'user_id' => $user->id,
+                    'user_id' => 1,
                     'name' => 'NaitNote',
                     'code' => 'naitnote',
                     'route' => 'naitnote.index',
@@ -42,7 +34,7 @@ class NaitcoreSubsystemSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'user_id' => $user->id,
+                    'user_id' => 1,
                     'name' => 'NaitCalendar',
                     'code' => 'naitcalendar',
                     'route' => 'naitcalendar.index',
@@ -53,7 +45,7 @@ class NaitcoreSubsystemSeeder extends Seeder
                     'updated_at' => now(),
                 ],
                 [
-                    'user_id' => $user->id,
+                    'user_id' => 1,
                     'name' => 'NaitPolling',
                     'code' => 'naitpolling',
                     'route' => 'naitpolling.index',
