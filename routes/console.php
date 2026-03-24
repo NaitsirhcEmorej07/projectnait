@@ -9,5 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::command('send:today-events')->dailyAt('07:00');
-// Schedule::command('send:today-events')->everyMinute();
+// Schedule::command('send:today-events')->dailyAt('07:00');
+Schedule::command('send:today-events')->everyMinute();
