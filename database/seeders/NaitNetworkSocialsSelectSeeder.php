@@ -9,8 +9,9 @@ class NaitNetworkSocialsSelectSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('naitnetwork_socials_select_tbl')->insert([
+        DB::table('naitnetwork_socials_select_tbl')->upsert([
             [
+                
                 'name' => 'Facebook',
                 'code' => 'facebook',
                 'icon' => 'pi pi-facebook',
@@ -66,7 +67,6 @@ class NaitNetworkSocialsSelectSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            
-        ]);
+        ], ['code'], ['name', 'icon', 'is_active', 'updated_at']);
     }
 }

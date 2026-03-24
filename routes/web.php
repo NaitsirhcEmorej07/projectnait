@@ -1,65 +1,73 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Core\DashboardController;
 use App\Http\Controllers\NaitCalendar\NaitCalendarController;
-use App\Http\Controllers\SubsystemController;
 use App\Http\Controllers\NaitNetwork\PersonController;
 use App\Http\Controllers\NaitNetwork\PublicProfileController;
 use App\Http\Controllers\NaitNetwork\RoleController;
 use App\Http\Controllers\NaitNotes\NoteController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubsystemController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
 
+    // NAITCORE DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::post('/subsystem/store', [SubsystemController::class, 'store'])->name('subsystem.store');
-    Route::get('/subsystem/{id}/edit', [SubsystemController::class, 'edit'])->name('subsystem.edit');
-    Route::patch('/subsystem/{id}/update', [SubsystemController::class, 'update'])->name('subsystem.update');
-    Route::patch('/subsystem/{id}/toggle', [SubsystemController::class, 'toggle'])->name('subsystem.toggle');
-    Route::delete('/subsystem/{id}', [SubsystemController::class, 'destroy'])->name('subsystem.destroy');
-
-    Route::get('/subsystem/{code}', [SubsystemController::class, 'landing'])->name('subsystem.landing');
-
-    Route::get('/naitnetwork/people', [PersonController::class, 'index'])->name('naitnetwork.people.index');
-    Route::post('/naitnetwork/people', [PersonController::class, 'store'])->name('naitnetwork.people.store');
-    Route::put('/naitnetwork/people/{person}', [PersonController::class, 'update'])->name('naitnetwork.people.update');
-    Route::delete('/naitnetwork/people/{person}', [PersonController::class, 'destroy'])->name('naitnetwork.people.destroy');
-    Route::prefix('naitnetwork')->group(function () {
-        Route::get('/roles', [RoleController::class, 'index'])->name('naitnetwork.roles.index');
-        Route::post('/roles', [RoleController::class, 'store'])->name('naitnetwork.roles.store');
-        Route::put('/roles/{role}', [RoleController::class, 'update'])->name('naitnetwork.roles.update');
-        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('naitnetwork.roles.destroy');
+    // SUBSYSTEM
+    Route::prefix('subsystem')->name('subsystem.')->group(function () {
+        Route::get('/{code}', [SubsystemController::class, 'landing'])->name('landing');
+        Route::post('/store', [SubsystemController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [SubsystemController::class, 'edit'])->name('edit');
+        Route::patch('/{id}/update', [SubsystemController::class, 'update'])->name('update');
+        Route::patch('/{id}/toggle', [SubsystemController::class, 'toggle'])->name('toggle');
+        Route::delete('/{id}', [SubsystemController::class, 'destroy'])->name('destroy');
     });
 
-    Route::post('/naitnote/store', [NoteController::class, 'store'])->name('naitnote.store');
-    Route::put('/naitnote/{note}/update', [NoteController::class, 'update'])->name('naitnote.update');
-    Route::delete('/naitnote/{note}/delete', [NoteController::class, 'destroy'])->name('naitnote.destroy');
+    // PROFILE SETTINGS
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // NAITNETWORK
+    Route::prefix('naitnetwork')->name('naitnetwork.')->group(function () {
+        Route::prefix('people')->name('people.')->group(function () {
+            Route::get('/', [PersonController::class, 'index'])->name('index');
+            Route::post('/', [PersonController::class, 'store'])->name('store');
+            Route::put('/{person}', [PersonController::class, 'update'])->name('update');
+            Route::delete('/{person}', [PersonController::class, 'destroy'])->name('destroy');
+            Route::post('/{person}/share', [PersonController::class, 'share'])->name('share');
+        });
 
-    Route::middleware(['auth'])->prefix('naitcalendar')->name('naitcalendar.')->group(function () {
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/', [RoleController::class, 'index'])->name('index');
+            Route::post('/', [RoleController::class, 'store'])->name('store');
+            Route::put('/{role}', [RoleController::class, 'update'])->name('update');
+            Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    // NAITNOTE
+    Route::prefix('naitnote')->name('naitnote.')->group(function () {
+        Route::post('/store', [NoteController::class, 'store'])->name('store');
+        Route::put('/{note}/update', [NoteController::class, 'update'])->name('update');
+        Route::delete('/{note}/delete', [NoteController::class, 'destroy'])->name('destroy');
+    });
+
+    // NAITCALENDAR
+    Route::prefix('naitcalendar')->name('naitcalendar.')->group(function () {
         Route::post('/store', [NaitCalendarController::class, 'store'])->name('store');
         Route::put('/{id}/update', [NaitCalendarController::class, 'update'])->name('update');
         Route::delete('/{id}/delete', [NaitCalendarController::class, 'destroy'])->name('destroy');
     });
 });
 
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-
+// NAITNETWORK PUBLIC PROFILE
 Route::get('/naitnetwork/p/{slug}/{token}', [PublicProfileController::class, 'show'])->name('naitnetwork.public.show');
-Route::post('/naitnetwork/people/{person}/share', [PersonController::class, 'share'])->name('naitnetwork.people.share');
 
 require __DIR__ . '/auth.php';

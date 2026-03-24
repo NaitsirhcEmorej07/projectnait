@@ -28,7 +28,7 @@
     $todayLabel = now()->format('F d, Y');
     $todayEvents = $events[$todayDate] ?? collect();
 
-@endphp 
+@endphp
 
 
 <div x-data="{
@@ -174,8 +174,8 @@
 
                 {{-- PREV --}}
                 <a href="{{ route('subsystem.landing', ['code' => 'naitcalendar', 'month' => $currentDate->copy()->subMonth()->month, 'year' => $currentDate->copy()->subMonth()->year]) }}"
-                    class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition">
-                    <i class="pi pi-chevron-left text-sm text-gray-700"></i>
+                    class="p-1.5 text-gray-500 hover:text-indigo-600 transition">
+                    <i class="pi pi-chevron-left text-sm"></i>
                 </a>
 
                 {{-- MONTH --}}
@@ -185,8 +185,8 @@
 
                 {{-- NEXT --}}
                 <a href="{{ route('subsystem.landing', ['code' => 'naitcalendar', 'month' => $currentDate->copy()->addMonth()->month, 'year' => $currentDate->copy()->addMonth()->year]) }}"
-                    class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition">
-                    <i class="pi pi-chevron-right text-sm text-gray-700"></i>
+                    class="p-1.5 text-gray-500 hover:text-indigo-600 transition">
+                    <i class="pi pi-chevron-right text-sm"></i>
                 </a>
 
             </div>
@@ -215,9 +215,9 @@
                 </div>
 
                 {{-- ADD EVENT FORM ACCORDION --}}
-                <div x-data="{ openAddEvent: false }" class="border border-gray-200 rounded-2xl mb-5 overflow-hidden">
+                <div x-data="{ openAddEvent: false }" class="border border-gray-200 rounded-2xl mb-5 overflow-hidden bg-white">
                     <button type="button" @click="openAddEvent = !openAddEvent"
-                        class="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition text-left">
+                        class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition text-left">
                         <div>
                             <h3 class="text-sm font-semibold text-gray-900">Add Event</h3>
                             <p class="text-xs text-gray-500">Create a new event for this date</p>
@@ -227,48 +227,63 @@
                             :class="openAddEvent ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
                     </button>
 
-                    <div x-show="openAddEvent" class="border-t border-gray-200 p-4 bg-gray-50">
-                        <form action="{{ route('naitcalendar.store') }}" method="POST" class="space-y-3">
+                    <div x-show="openAddEvent" x-transition class="border-t border-gray-100 p-3">
+                        <form action="{{ route('naitcalendar.store') }}" method="POST" class="space-y-4">
                             @csrf
 
                             <input type="hidden" name="event_date" :value="selectedDate">
 
+                            {{-- TITLE --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Title</label>
                                 <input type="text" name="title"
-                                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                    required>
+                                    class="w-full rounded-xl border-gray-300 text-sm placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="Enter event title" required>
                             </div>
 
+                            {{-- TIME + TYPE --}}
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Time</label>
+                                    <input type="time" name="event_time" value="00:00"
+                                        class="w-full rounded-xl border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Type</label>
+                                    <select name="type"
+                                        class="w-full rounded-xl border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        <option value="" disabled selected>Select type</option>
+                                        <option value="PERSONAL">Personal</option>
+                                        <option value="RELATIONAL">Relational</option>
+                                        <option value="WORK">Work</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {{-- STATUS --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                                <input type="time" name="event_time"
-                                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                                <select name="status"
+                                    class="w-full rounded-xl border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="" disabled selected>Select status</option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="DONE">Done</option>
+                                </select>
                             </div>
 
+                            {{-- DESCRIPTION --}}
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                                <input type="text" name="type"
-                                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="Meeting, Personal, Work">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                <textarea name="description" rows="9"
+                                    class="w-full rounded-xl border-gray-300 text-sm placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="Add notes or details"></textarea>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <input type="text" name="status"
-                                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="Pending, Done">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <textarea name="description" rows="3"
-                                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"></textarea>
-                            </div>
-
+                            {{-- BUTTON --}}
                             <div class="pt-1">
                                 <button type="submit"
-                                    class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 text-sm">
+                                    class="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition">
                                     Save Event
                                 </button>
                             </div>
