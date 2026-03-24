@@ -52,6 +52,17 @@ class NaitcoreSubsystemSeeder extends Seeder
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
+                [
+                    'user_id' => $user->id,
+                    'name' => 'NaitPolling',
+                    'code' => 'naitpolling',
+                    'route' => 'naitpolling.index',
+                    'icon' => 'pi pi-comment',
+                    'description' => 'Chat Users using Ajax Polling',
+                    'is_active' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
             ],
             ['user_id', 'code'],
             ['name', 'route', 'icon', 'description', 'is_active', 'updated_at']

@@ -63,10 +63,10 @@
     <div class="bg-white shadow-sm rounded-2xl p-5 sm:p-6">
 
         {{-- HEADER --}}
-        <div class="mb-6">
+        <div class="mb-5">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-gray-900">NAIT CALENDAR</h1>
+                    <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Nait Calendar</h1>
                     <p class="text-sm text-gray-500">Click a date to manage your daily events</p>
                 </div>
 
@@ -91,8 +91,8 @@
 
         {{-- SUCCESS --}}
         @if (session('success'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 2000)" x-show="show" x-transition
-                class="mb-4 rounded-xl bg-green-100 text-green-700 p-3 text-sm mt-5">
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" x-transition
+                class="mb-4 rounded-xl bg-green-100 text-green-700 p-3 text-sm">
 
                 {{ session('success') }}
             </div>
