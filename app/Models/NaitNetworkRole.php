@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class NaitNetworkRole extends Model
 {
-    protected $table = 'naitnetwork_roles_tbl';
+    protected $table = 'naitnetwork_roles_select_tbl';
 
     protected $fillable = [
         'name',

@@ -25,7 +25,7 @@ class PersonController extends Controller
 
         if ($selectedRole) {
             $query->whereHas('roles', function ($q) use ($selectedRole) {
-                $q->where('naitnetwork_roles_tbl.id', $selectedRole);
+                $q->where('naitnetwork_roles_select_tbl.id', $selectedRole);
             });
         }
 
@@ -49,7 +49,7 @@ class PersonController extends Controller
             'notes' => 'nullable|string',
 
             'roles' => 'nullable|array',
-            'roles.*' => 'exists:naitnetwork_roles_tbl,id',
+            'roles.*' => 'exists:naitnetwork_roles_select_tbl,id',
 
             'socials' => 'nullable|array',
             'socials.*.social_select_id' => 'nullable|exists:naitnetwork_socials_select_tbl,id',
@@ -126,7 +126,7 @@ class PersonController extends Controller
             'notes' => 'nullable|string',
 
             'roles' => 'nullable|array',
-            'roles.*' => 'exists:naitnetwork_roles_tbl,id',
+            'roles.*' => 'exists:naitnetwork_roles_select_tbl,id',
 
             'socials' => 'nullable|array',
             'socials.*.social_select_id' => 'nullable|exists:naitnetwork_socials_select_tbl,id',
