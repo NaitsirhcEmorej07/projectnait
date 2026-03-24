@@ -28,7 +28,7 @@
     $todayLabel = now()->format('F d, Y');
     $todayEvents = $events[$todayDate] ?? collect();
 
-@endphp
+@endphp 
 
 
 <div x-data="{
