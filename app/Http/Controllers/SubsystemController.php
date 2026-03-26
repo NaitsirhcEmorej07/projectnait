@@ -125,7 +125,7 @@ class SubsystemController extends Controller
 
         if ($selectedRole) {
             $query->whereHas('roles', function ($q) use ($selectedRole) {
-                $q->where('naitnetwork_roles_tbl.id', $selectedRole);
+                $q->where('naitnetwork_roles_select_tbl.id', $selectedRole);
             });
         }
 
