@@ -9,6 +9,9 @@ use App\Http\Controllers\NaitNotes\NoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubsystemController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\FileController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,6 +68,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/{id}/update', [NaitCalendarController::class, 'update'])->name('update');
         Route::delete('/{id}/delete', [NaitCalendarController::class, 'destroy'])->name('destroy');
     });
+
+    // NAIT BUCKETS
+    Route::get('/files', [FileController::class, 'index']);
+    Route::post('/files/upload', [FileController::class, 'upload']);
+    Route::delete('/files/delete', [FileController::class, 'delete']);
 });
 
 // NAITNETWORK PUBLIC PROFILE
