@@ -13,7 +13,7 @@
 
 
         {{-- NOTES LIST --}}
-        <div class="bg-white shadow-sm rounded-2xl p-5 sm:p-6">
+        <div id="notes-list" class="bg-white shadow-sm rounded-2xl p-5 sm:p-6">
 
             <div class="mb-3 flex items-center justify-between">
                 <h2 class="text-lg sm:text-xl font-semibold text-gray-900">
@@ -27,7 +27,7 @@
             </div>
 
             @forelse ($notes as $note)
-                <div class="flex items-stretch mb-3 group cursor-pointer"
+                <div class="flex items-stretch mb-3 group cursor-move" data-id="{{ $note->id }}"
                     @click='selectedNote = {
                         id: @json($note->id),
                         title: @json($note->title),
@@ -35,6 +35,7 @@
                         color: @json($note->color ?? '#6366F1')
                     }; openViewNoteModal = true'>
 
+                    
                     {{-- LEFT COLOR MARK --}}
                     <div class="w-1.5 rounded-l-xl" style="background-color: {{ $note->color ?? '#6366F1' }}"></div>
 
@@ -84,7 +85,8 @@
 
             <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6">
 
-                <button type="button" @click="if (confirm('This note cannot be save. Close anyway?')) openAddNoteModal = false"
+                <button type="button"
+                    @click="if (confirm('This note cannot be save. Close anyway?')) openAddNoteModal = false"
                     class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                     <i class="pi pi-times text-lg"></i>
                 </button>
@@ -186,7 +188,8 @@
 
             <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto my-10 p-6">
 
-                <button type="button" @click="confirm('This note cannot be updated. Close anyway?') && (openViewNoteModal = false)"
+                <button type="button"
+                    @click="confirm('This note cannot be updated. Close anyway?') && (openViewNoteModal = false)"
                     class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                     <i class="pi pi-times text-lg"></i>
                 </button>
@@ -285,5 +288,36 @@
     </template>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let el = document.getElementById('notes-list');
+
+            Sortable.create(el, {
+                animation: 150,
+                onEnd: function() {
+                    let order = [];
+
+                    document.querySelectorAll('#notes-list [data-id]').forEach((item, index) => {
+                        order.push({
+                            id: item.dataset.id,
+                            position: index + 1
+                        });
+                    });
+
+                    fetch('/naitnote/reorder', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            order: order
+                        })
+                    });
+                }
+            });
+        });
+    </script>
 </div>

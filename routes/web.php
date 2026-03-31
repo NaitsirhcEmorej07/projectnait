@@ -60,6 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/store', [NoteController::class, 'store'])->name('store');
         Route::put('/{note}/update', [NoteController::class, 'update'])->name('update');
         Route::delete('/{note}/delete', [NoteController::class, 'destroy'])->name('destroy');
+        Route::post('/reorder', [NoteController::class, 'reorder'])->name('reorder');
     });
 
     // NAITCALENDAR

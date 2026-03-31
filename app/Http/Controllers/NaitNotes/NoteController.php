@@ -60,4 +60,14 @@ class NoteController extends Controller
             ->route('subsystem.landing', 'naitnote')
             ->with('success', 'Note deleted successfully.');
     }
+
+    public function reorder(Request $request)
+    {
+        foreach ($request->order as $item) {
+            NaitNote::where('id', $item['id'])
+                ->update(['position' => $item['position']]);
+        }
+
+        return response()->json(['status' => 'success']);
+    }
 }

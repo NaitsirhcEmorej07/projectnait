@@ -147,7 +147,7 @@ class SubsystemController extends Controller
     private function handleNaitnote(Request $request, $subsystem)
     {
         $notes = NaitNote::where('user_id', Auth::id())
-            ->latest()
+            ->orderBy('position')
             ->paginate(10);
 
         return [
