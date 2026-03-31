@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\NaitFile;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class FileController extends Controller
+class NaitFileController extends Controller
 {
     public function index()
     {
         $files = Storage::disk('s3')->allFiles();
 
-        return view('files.index', compact('files'));
+        return view('subsystem.workspaces.naitfile.naitfile', compact('files'));
     }
 
     public function upload(Request $request)

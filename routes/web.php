@@ -11,6 +11,7 @@ use App\Http\Controllers\SubsystemController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\NaitFile\NaitFileController;
 
 
 Route::get('/', function () {
@@ -70,10 +71,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/{id}/delete', [NaitCalendarController::class, 'destroy'])->name('destroy');
     });
 
-    // NAIT BUCKETS
-    Route::get('/files', [FileController::class, 'index']);
-    Route::post('/files/upload', [FileController::class, 'upload']);
-    Route::delete('/files/delete', [FileController::class, 'delete']);
+    // NAITFILE
+    Route::prefix('naitfile')->name('naitfile.')->group(function () {
+        Route::post('/upload', [NaitFileController::class, 'upload'])->name('upload');
+        Route::delete('/delete', [NaitFileController::class, 'delete'])->name('delete');
+        Route::get('/', [NaitFileController::class, 'index'])->name('index');
+    });
 });
 
 // NAITNETWORK PUBLIC PROFILE

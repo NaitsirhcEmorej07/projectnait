@@ -13,6 +13,7 @@ use App\Models\Subsystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 
@@ -185,6 +186,15 @@ class SubsystemController extends Controller
             'startDayOfWeek' => $startDayOfWeek,
             'daysInMonth' => $daysInMonth,
             'events' => $events,
+        ];
+    }
+
+    private function handleNaitfile(Request $request, $subsystem)
+    {
+        $files = Storage::disk('s3')->allFiles();
+
+        return [
+            'files' => $files,
         ];
     }
 }

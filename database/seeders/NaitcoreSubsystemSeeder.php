@@ -55,6 +55,17 @@ class NaitcoreSubsystemSeeder extends Seeder
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
+                [
+                    'user_id' => 1,
+                    'name' => 'NaitFiles',
+                    'code' => 'naifile',
+                    'route' => 'naitfile.index',
+                    'icon' => 'pi pi-file',
+                    'description' => 'Personal cloud storage facility',
+                    'is_active' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
             ],
             ['code'],
             ['name', 'route', 'icon', 'description', 'is_active', 'updated_at']
