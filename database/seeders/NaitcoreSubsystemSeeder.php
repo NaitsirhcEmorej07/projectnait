@@ -58,7 +58,7 @@ class NaitcoreSubsystemSeeder extends Seeder
                 [
                     'user_id' => 1,
                     'name' => 'NaitFiles',
-                    'code' => 'naifile',
+                    'code' => 'naitfile',
                     'route' => 'naitfile.index',
                     'icon' => 'pi pi-file',
                     'description' => 'Personal cloud storage facility',

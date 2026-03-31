@@ -1,4 +1,4 @@
-<div class="p-4">
+<div class="">
 
     @if (session('success'))
         <div class="bg-green-200 text-green-800 p-2 mb-4 rounded">
