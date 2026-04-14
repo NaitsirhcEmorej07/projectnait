@@ -1,11 +1,23 @@
 <div x-data="{
     openAddNoteModal: {{ $errors->any() ? 'true' : 'false' }},
     openViewNoteModal: false,
+
     selectedNote: {
         id: '',
         title: '',
         content: '',
         color: '#6366F1'
+    },
+
+    init() {
+        this.$watch('selectedNote', (note) => {
+            this.$nextTick(() => {
+                if (this.$refs.editEditor) {
+                    this.$refs.editEditor.innerHTML = note.content || '';
+                    this.$refs.editHidden.value = note.content || '';
+                }
+            });
+        });
     }
 }">
     <div class="space-y-4">
@@ -28,14 +40,25 @@
 
             @forelse ($notes as $note)
                 <div class="flex items-stretch mb-3 group cursor-move" data-id="{{ $note->id }}"
-                    @click='selectedNote = {
-                        id: @json($note->id),
-                        title: @json($note->title),
-                        content: @json($note->content),
-                        color: @json($note->color ?? '#6366F1')
-                    }; openViewNoteModal = true'>
+                    @click='
+                                selectedNote = {
+                                    id: @json($note->id),
+                                    title: @json($note->title),
+                                    content: @json($note->content),
+                                    color: @json($note->color ?? '#6366F1')
+                                };
 
-                    
+                                openViewNoteModal = true;
+
+                                $nextTick(() => {
+                                    if ($refs.editEditor) {
+                                        $refs.editEditor.innerHTML = selectedNote.content || "";
+                                        $refs.editHidden.value = selectedNote.content || "";
+                                    }
+                                });
+                            '>
+
+
                     {{-- LEFT COLOR MARK --}}
                     <div class="w-1.5 rounded-l-xl" style="background-color: {{ $note->color ?? '#6366F1' }}"></div>
 
@@ -112,8 +135,12 @@
 
                     {{-- CONTENT --}}
                     <div>
-                        <textarea rows="14" name="content" placeholder="Write your thoughts..."
-                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm leading-relaxed resize-none">{{ old('content') }}</textarea>
+                        <div contenteditable="true"
+                            class="w-full border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm leading-relaxed min-h-[300px] p-3 outline-none"
+                            x-ref="addEditor" @input="$refs.addHidden.value = $el.innerHTML">
+                        </div>
+
+                        <input type="hidden" name="content" x-ref="addHidden">
                         @error('content')
                             <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -206,9 +233,12 @@
                     </div>
 
                     <div>
-                        <textarea rows="14" name="content" x-model="selectedNote.content"
-                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm leading-relaxed resize-none"
-                            placeholder="Write your thoughts..."></textarea>
+                        <div contenteditable="true"
+                            class="w-full border border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm leading-relaxed min-h-[300px] p-3 outline-none"
+                            x-ref="editEditor" @input="$refs.editHidden.value = $el.innerHTML">
+                        </div>
+
+                        <input type="hidden" name="content" x-ref="editHidden">
                     </div>
 
                     <div>
@@ -223,8 +253,8 @@
                         <div class="flex flex-wrap gap-1.5">
                             @foreach ($colors as $color)
                                 <label class="cursor-pointer">
-                                    <input type="radio" name="color" value="{{ $color }}" class="sr-only"
-                                        x-model="selectedNote.color">
+                                    <input type="radio" name="color" value="{{ $color }}"
+                                        class="sr-only" x-model="selectedNote.color">
 
                                     <div class="h-6 w-6 rounded-full transition flex items-center justify-center"
                                         :class="selectedNote.color === '{{ $color }}' ?
@@ -318,6 +348,13 @@
                     });
                 }
             });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                document.execCommand('bold');
+            }
         });
     </script>
 </div>
