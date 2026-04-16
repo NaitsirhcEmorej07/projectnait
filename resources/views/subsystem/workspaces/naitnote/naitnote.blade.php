@@ -25,7 +25,7 @@
 
 
         {{-- NOTES LIST --}}
-        <div id="notes-list" class="bg-white shadow-sm rounded-2xl p-5 sm:p-6">
+        <div id="notes-list" class="bg-white shadow-sm rounded-2xl p-4 sm:p-6">
 
             <div class="mb-3 flex items-center justify-between">
                 <h2 class="text-lg sm:text-xl font-semibold text-gray-900">
