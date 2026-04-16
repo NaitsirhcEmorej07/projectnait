@@ -228,8 +228,7 @@
 
             <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-auto my-10 p-6">
 
-                <button type="button"
-                    @click="confirm('This note cannot be updated. Close anyway?') && (openViewNoteModal = false)"
+                <button type="button" @click="openViewNoteModal = false"
                     class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
                     <i class="pi pi-times text-lg"></i>
                 </button>
