@@ -348,6 +348,10 @@
 
             Sortable.create(el, {
                 animation: 150,
+
+                delay: 500, // ⏱️ hold for 200ms before drag starts
+                delayOnTouchOnly: false, // applies to mouse + touch
+
                 onEnd: function() {
                     let order = [];
 
