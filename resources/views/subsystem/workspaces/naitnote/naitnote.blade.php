@@ -60,7 +60,7 @@
 
 
                     {{-- LEFT COLOR MARK --}}
-                    <div class="w-4 rounded-l-md cursor-grab drag-handle"
+                    <div class="w-3 rounded-l-md cursor-grab drag-handle"
                         style="background-color: {{ $note->color ?? '#6366F1' }}">
                     </div>
 
