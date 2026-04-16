@@ -149,7 +149,7 @@ class SubsystemController extends Controller
     {
         $notes = NaitNote::where('user_id', Auth::id())
             ->orderBy('position')
-            ->paginate(10);
+            ->paginate(20);
 
         return [
             'notes' => $notes,
