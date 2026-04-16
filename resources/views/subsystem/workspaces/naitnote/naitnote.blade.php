@@ -60,7 +60,9 @@
 
 
                     {{-- LEFT COLOR MARK --}}
-                    <div class="w-1.5 rounded-l-xl" style="background-color: {{ $note->color ?? '#6366F1' }}"></div>
+                    <div class="w-4 rounded-l-xl cursor-grab drag-handle"
+                        style="background-color: {{ $note->color ?? '#6366F1' }}">
+                    </div>
 
                     {{-- NOTE CARD --}}
                     <div class="flex-1 border border-gray-200 border-l-0 rounded-r-xl p-4 hover:bg-gray-50 transition">
@@ -349,8 +351,7 @@
             Sortable.create(el, {
                 animation: 150,
 
-                delay: 500, // ⏱️ hold for 200ms before drag starts
-                delayOnTouchOnly: false, // applies to mouse + touch
+                handle: '.drag-handle', // 🔥 IMPORTANT
 
                 onEnd: function() {
                     let order = [];
