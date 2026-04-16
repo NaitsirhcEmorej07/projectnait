@@ -108,7 +108,7 @@
 
             <div class="absolute inset-0" @click="openAddNoteModal = false"></div>
 
-            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl mx-auto my-10 p-5">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-auto my-10 p-6">
 
                 <button type="button"
                     @click="if (confirm('This note cannot be save. Close anyway?')) openAddNoteModal = false"
@@ -226,7 +226,7 @@
 
             <div class="absolute inset-0"></div>
 
-            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl mx-auto my-10 p-5">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-auto my-10 p-6">
 
                 <button type="button"
                     @click="confirm('This note cannot be updated. Close anyway?') && (openViewNoteModal = false)"
