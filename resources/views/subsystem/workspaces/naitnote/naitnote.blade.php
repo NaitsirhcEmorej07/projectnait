@@ -104,11 +104,11 @@
     {{-- ADD NOTE MODAL --}}
     <template x-teleport="body">
         <div x-show="openAddNoteModal" x-transition.opacity
-            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto p-2" style="display: none;">
+            class="fixed inset-0 z-[9999] bg-black/50 overflow-y-auto p-3" style="display: none;">
 
             <div class="absolute inset-0" @click="openAddNoteModal = false"></div>
 
-            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl mx-auto my-10 p-3">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl mx-auto my-10 p-5">
 
                 <button type="button"
                     @click="if (confirm('This note cannot be save. Close anyway?')) openAddNoteModal = false"
@@ -226,7 +226,7 @@
 
             <div class="absolute inset-0"></div>
 
-            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl mx-auto my-10 p-3">
+            <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl mx-auto my-10 p-5">
 
                 <button type="button"
                     @click="confirm('This note cannot be updated. Close anyway?') && (openViewNoteModal = false)"
