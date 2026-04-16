@@ -153,7 +153,18 @@
                         </label>
 
                         @php
-                            $colors = ['#6366F1', '#22C55E', '#EF4444', '#F59E0B', '#3B82F6', '#A855F7'];
+                            $colors = [
+                                '#6366F1', // indigo
+                                '#22C55E', // green
+                                '#EF4444', // red
+                                '#F59E0B', // orange
+                                '#3B82F6', // blue
+                                '#A855F7', // purple
+
+                                '#EAB308', // yellow
+                                '#000000', // black
+                                '#6B7280', // gray
+                            ];
                         @endphp
 
                         <div class="flex flex-wrap gap-1.5">
@@ -247,7 +258,18 @@
                         </label>
 
                         @php
-                            $colors = ['#6366F1', '#22C55E', '#EF4444', '#F59E0B', '#3B82F6', '#A855F7'];
+                            $colors = [
+                                '#6366F1', // indigo
+                                '#22C55E', // green
+                                '#EF4444', // red
+                                '#F59E0B', // orange
+                                '#3B82F6', // blue
+                                '#A855F7', // purple
+
+                                '#EAB308', // yellow
+                                '#000000', // black
+                                '#6B7280', // gray
+                            ];
                         @endphp
 
                         <div class="flex flex-wrap gap-1.5">
