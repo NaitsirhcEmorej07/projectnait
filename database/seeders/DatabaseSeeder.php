@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             NaitNetworkSocialsSelectSeeder::class,
             NaitcoreSubsystemSeeder::class,
+            RegistrationCodeSeeder::class,
         ]);
     }
 }
