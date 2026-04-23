@@ -191,7 +191,11 @@ class SubsystemController extends Controller
 
     private function handleNaitfile(Request $request, $subsystem)
     {
-        $files = Storage::disk('s3')->allFiles();
+        $path = 'uploads/' . Auth::id();
+
+        $files = Storage::disk('s3')->exists($path)
+            ? Storage::disk('s3')->allFiles($path)
+            : [];
 
         return [
             'files' => $files,
